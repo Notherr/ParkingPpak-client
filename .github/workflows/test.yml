@@ -21,4 +21,3 @@ jobs:
         run: npm run build
         env:
           CI: ''
-          # GITHUB_TOKEN: ${{secrets.REPO_SCOPED_TOKEN }}
