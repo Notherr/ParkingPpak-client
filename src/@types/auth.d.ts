@@ -12,6 +12,14 @@ declare global {
     password: string;
   };
 
+  type UserInfo = {
+    email: string;
+    name: string;
+    oilType: Nullable<OilType>;
+    card: Nullable<string>;
+    navi: Nullable<string>;
+  };
+
   type KakaoAuthUser = {
     scopes: string[];
     refreshTokenExpiresAt: Date;
