@@ -8,6 +8,7 @@ const baseAPI = new APIService({
   baseURL: baseURL,
   timeout: 5000,
   timeoutErrorMessage: 'Request Timeout',
+  validateStatus: status => status < 500,
 });
 
 export {baseAPI};

@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {baseAPI} from 'api';
+import authStorage from '@/storages/authStorage';
 import {useSetRecoilState} from 'recoil';
 import {LocalAuthState} from 'recoil/atoms';
 
@@ -11,21 +11,27 @@ export default function useLocalAuthActions() {
     () => ({
       join: async (user: RegisterRequest) => {
         try {
-          return await baseAPI.post('/api/join', user);
+          const result = await baseAPI.post<void>('/api/join', user);
+          return result;
         } catch (error) {
-          return error;
+          throw new Error();
         }
       },
       login: async (user: LoginRequest) => {
         try {
-          return await baseAPI.post('/api/login', user);
+          const result = await baseAPI.post<UserInfo>('/api/login', user);
+          if (result.statusCode === 200) {
+            setLocalUser(result.data);
+            authStorage.set(result.data);
+          }
+          return result;
         } catch (error) {
-          return error;
+          throw new Error();
         }
       },
       logout: async () => {
         try {
-          await AsyncStorage.removeItem('parking-ppak-user');
+          await authStorage.clear();
           setLocalUser(null);
         } catch (error) {
           return error;

@@ -3,8 +3,8 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
+import authStorage from '@/storages/authStorage';
 import MainTab from './MainTab';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MapStack} from '@/screens/Map';
 import {SearchScreen} from '@/screens/Search';
 import Auth from './Auth';
@@ -26,13 +26,9 @@ function RootStack() {
   // localStorage에 내 정보가 저장되어있는지 확인
   useEffect(() => {
     (async () => {
-      const userToken = await AsyncStorage.getItem('parking-ppak-user');
+      const userToken = await authStorage.get();
       if (userToken) {
-        // userToken이 유효한지 체크
-        const isVerified = true;
-        if (isVerified) {
-          setAuth(true);
-        }
+        setAuth(true);
       }
       setTimeout(() => setIsLoading(false), 2000);
     })();
@@ -42,6 +38,7 @@ function RootStack() {
     if (userInfo) {
       setAuth(true);
     } else {
+      console.log('logout 함');
       setAuth(false);
     }
   }, [userInfo]);

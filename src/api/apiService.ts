@@ -15,6 +15,7 @@ export class APIService {
   }
 
   protected onSuccess = (res: AxiosResponse) => {
+    console.log('success :', res);
     return res.data;
   };
 
@@ -27,13 +28,17 @@ export class APIService {
     } else {
       console.error('Error message:', err.message);
     }
-    return Promise.reject(err.response || err.message);
+    return Promise.reject(err.response);
   };
 
   public get = (url: string, config?: AxiosRequestConfig) =>
     this.instance.get(url, config).then(this.onSuccess).catch(this.onError);
 
-  public post = (url: string, data?: any, config?: AxiosRequestConfig) =>
+  public post = <T>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<APIData<T>> =>
     this.instance
       .post(url, data, config)
       .then(this.onSuccess)

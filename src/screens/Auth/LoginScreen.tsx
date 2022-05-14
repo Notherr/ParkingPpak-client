@@ -6,19 +6,15 @@ import {useNavigation} from '@react-navigation/native';
 import {StyleSheet, Text, View, TextInput, Pressable} from 'react-native';
 import ZocialIcon from 'react-native-vector-icons/Zocial';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Formik} from 'formik';
-import {LocalAuthState} from 'recoil/atoms';
 import {BorderedInput, CustomButton} from '@components/common';
 import * as Yup from 'yup';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import {useKakaoAuthActions} from 'recoil/actions';
 import {useLocalAuthActions} from 'recoil/actions';
-import {useSetRecoilState} from 'recoil';
 
 export default function LoginScreen() {
   const navigation = useNavigation<AuthStackNavigationProps>();
-  const setLocalUser = useSetRecoilState(LocalAuthState);
 
   const [emailError, setEmailError] = useState<string>();
   const [passwordError, setPasswordError] = useState<string>();
@@ -46,17 +42,10 @@ export default function LoginScreen() {
 
   const onLocalLogin = async (userInfo: LoginRequest) => {
     const response = await localLogin(userInfo);
-    if (response.status === 400) {
-      setEmailError(response.data);
-    } else if (response.status === 401) {
-      setPasswordError(response.data);
-    } else if (response !== null) {
-      // 로그인 성공 후 처리
-      await AsyncStorage.setItem(
-        'parking-ppak-user',
-        JSON.stringify(response.jwt),
-      );
-      setLocalUser(response as UserInfo);
+    if (response.statusCode === 400) {
+      setEmailError(response.message);
+    } else if (response.statusCode === 401) {
+      setPasswordError(response.message);
     }
   };
 

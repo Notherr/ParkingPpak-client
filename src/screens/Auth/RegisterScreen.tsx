@@ -54,8 +54,8 @@ export default function RegisterScreen() {
 
   const onJoin = async (userInfo: RegisterRequest) => {
     const result = await join(userInfo);
-    if (result.status === 400) {
-      setErrorResponse(result.data);
+    if (result.statusCode === 400) {
+      setErrorResponse(result.message);
     } else {
       // 회원가입 성공
       navigation.navigate('Login');
