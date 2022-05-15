@@ -15,7 +15,6 @@ export class APIService {
   }
 
   protected onSuccess = (res: AxiosResponse) => {
-    console.log('success :', res);
     return res.data;
   };
 

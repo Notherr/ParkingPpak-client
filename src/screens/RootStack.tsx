@@ -38,7 +38,6 @@ function RootStack() {
     if (userInfo) {
       setAuth(true);
     } else {
-      console.log('logout 함');
       setAuth(false);
     }
   }, [userInfo]);
