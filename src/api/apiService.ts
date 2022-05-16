@@ -3,7 +3,7 @@ import axios, {
   AxiosError,
   AxiosRequestConfig,
   AxiosInstance,
-} from "axios";
+} from 'axios';
 
 export class APIService {
   public instance: AxiosInstance;
@@ -19,29 +19,33 @@ export class APIService {
   };
 
   protected onError = (err: AxiosError) => {
-    console.error("Request Failed:", err.config);
+    console.error('Request Failed:', err.config);
     if (err.response) {
-      console.error("Status:", err.response.status);
-      console.error("Data:", err.response.data);
-      console.error("Headers:", err.response.headers);
+      console.error('Status:', err.response.status);
+      console.error('Data:', err.response.data);
+      console.error('Headers:', err.response.headers);
     } else {
-      console.error("Error message:", err.message);
+      console.error('Error message:', err.message);
     }
-    return Promise.reject(err.response || err.message);
+    return Promise.reject(err.response);
   };
 
   public get = (url: string, config?: AxiosRequestConfig) =>
     this.instance.get(url, config).then(this.onSuccess).catch(this.onError);
 
-  public post = (url: string, data?: any, config?: AxiosRequestConfig) =>
+  public post = <T>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<APIData<T>> =>
     this.instance
       .post(url, data, config)
       .then(this.onSuccess)
       .catch(this.onError);
 
-  public patch = (url: string, data?: any, config?: AxiosRequestConfig) =>
+  public put = (url: string, data?: any, config?: AxiosRequestConfig) =>
     this.instance
-      .patch(url, data, config)
+      .put(url, data, config)
       .then(this.onSuccess)
       .catch(this.onError);
 

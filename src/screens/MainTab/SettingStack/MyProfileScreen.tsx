@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {StyleSheet, Text, Pressable} from 'react-native';
-import {useKakaoAuthActions} from 'hooks';
+import {useLocalAuthActions} from 'recoil/actions';
 import {
   GridColumn,
   FlexView,
@@ -11,7 +11,7 @@ import {
 
 function MyProfileScreen() {
   const navigation = useNavigation();
-  const {logout} = useKakaoAuthActions();
+  const {logout} = useLocalAuthActions();
 
   useEffect(() => {
     navigation.setOptions({

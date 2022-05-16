@@ -1,6 +1,7 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
+import {useLocalAuthActions} from 'recoil/actions';
 import {palette} from '@constant/index';
 import {AuthStackNavigationProps} from './index';
 import {useNavigation} from '@react-navigation/native';
@@ -19,10 +20,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 type RegisterForm = RegisterRequest & {confirmPassword: string};
 
 export default function RegisterScreen() {
+  const {join} = useLocalAuthActions();
   const navigation = useNavigation<AuthStackNavigationProps>();
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
   const confirmPasswordRef = useRef<TextInput>(null);
+  const [errorResponse, setErrorResponse] = useState<string>();
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('이름은 필수입니다.'),
@@ -49,6 +52,16 @@ export default function RegisterScreen() {
 
   const onPressLogin = () => navigation.pop();
 
+  const onJoin = async (userInfo: RegisterRequest) => {
+    const result = await join(userInfo);
+    if (result.statusCode === 400) {
+      setErrorResponse(result.message);
+    } else {
+      // 회원가입 성공
+      navigation.navigate('Login');
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.KeyboardAvoidingView}
@@ -57,16 +70,20 @@ export default function RegisterScreen() {
         <View style={styles.logo}>
           <Text>로고</Text>
         </View>
-
         <Formik
           initialValues={initialValues}
           onSubmit={values => {
-            console.log('values>>', values);
+            onJoin({
+              name: values.name,
+              email: values.email,
+              password: values.password,
+            });
           }}
           validateOnMount
           validationSchema={validationSchema}>
           {({
             values,
+            setFieldValue,
             handleChange,
             handleSubmit,
             handleBlur,
@@ -97,11 +114,17 @@ export default function RegisterScreen() {
                   autoCapitalize="none"
                   autoCorrect={false}
                   keyboardType="email-address"
-                  onChangeText={handleChange('email')}
+                  onChangeText={text => {
+                    setFieldValue('email', text);
+                    if (errorResponse) {
+                      setErrorResponse(undefined);
+                    }
+                  }}
                   onBlur={handleBlur('email')}
                   onSubmitEditing={() => passwordRef.current?.focus()}
                   errorMessage={
-                    errors.email && touched.email ? errors.email : undefined
+                    errorResponse ??
+                    (errors.email && touched.email ? errors.email : undefined)
                   }
                 />
                 <BorderedInput
@@ -136,7 +159,7 @@ export default function RegisterScreen() {
                   }
                 />
                 <CustomButton
-                  disabled={!isValid}
+                  disabled={!!errorResponse || !isValid}
                   onPress={handleSubmit}
                   text="회원가입"
                 />

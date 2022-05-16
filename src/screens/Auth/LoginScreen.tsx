@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {login} from '@react-native-seoul/kakao-login';
 import {AuthStackNavigationProps} from './index';
 import {palette} from '@constant/index';
@@ -10,11 +10,15 @@ import {Formik} from 'formik';
 import {BorderedInput, CustomButton} from '@components/common';
 import * as Yup from 'yup';
 import AntIcon from 'react-native-vector-icons/AntDesign';
-import {useKakaoAuthActions} from 'hooks';
+import {useKakaoAuthActions} from 'recoil/actions';
+import {useLocalAuthActions} from 'recoil/actions';
 
 export default function LoginScreen() {
   const navigation = useNavigation<AuthStackNavigationProps>();
 
+  const [emailError, setEmailError] = useState<string>();
+  const [passwordError, setPasswordError] = useState<string>();
+  const {login: localLogin} = useLocalAuthActions();
   const {loginKakao} = useKakaoAuthActions();
 
   const onPressRegister = () => {
@@ -35,6 +39,16 @@ export default function LoginScreen() {
     const user: KakaoAuthUser = await login();
     loginKakao(user);
   };
+
+  const onLocalLogin = async (userInfo: LoginRequest) => {
+    const response = await localLogin(userInfo);
+    if (response.statusCode === 400) {
+      setEmailError(response.message);
+    } else if (response.statusCode === 401) {
+      setPasswordError(response.message);
+    }
+  };
+
   const passwordRef = useRef<TextInput>(null);
 
   return (
@@ -45,21 +59,27 @@ export default function LoginScreen() {
       <Formik
         initialValues={initialValues}
         onSubmit={(values: LoginRequest) => {
-          console.log(values);
+          onLocalLogin(values);
         }}
         validateOnMount
         validationSchema={validationSchema}>
-        {({values, handleChange, handleSubmit, isValid, errors, touched}) => (
+        {({values, handleSubmit, setFieldValue, isValid, errors, touched}) => (
           <>
             <BorderedInput
               value={values.email}
-              onChangeText={handleChange('email')}
+              onChangeText={text => {
+                setFieldValue('email', text);
+                if (emailError) {
+                  setEmailError(undefined);
+                }
+              }}
               returnKeyType="next"
               placeholder="이메일"
               keyboardType="email-address"
               onEndEditing={() => passwordRef.current?.focus()}
               errorMessage={
-                errors.email && touched.email ? errors.email : undefined
+                emailError ??
+                (errors.email && touched.email ? errors.email : undefined)
               }
             />
             <BorderedInput
@@ -68,12 +88,18 @@ export default function LoginScreen() {
               returnKeyType="done"
               placeholder="비밀번호"
               value={values.password}
-              onChangeText={handleChange('password')}
+              onChangeText={text => {
+                setFieldValue('password', text);
+                if (passwordError) {
+                  setPasswordError(undefined);
+                }
+              }}
               secureTextEntry
               errorMessage={
-                errors.password && touched.password
+                passwordError ??
+                (errors.password && touched.password
                   ? errors.password
-                  : undefined
+                  : undefined)
               }
             />
             <CustomButton

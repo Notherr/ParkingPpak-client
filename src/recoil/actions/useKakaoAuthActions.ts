@@ -11,7 +11,7 @@ export default function useKakaoAuthActions() {
     () => ({
       loginKakao: async (user: KakaoAuthUser) => {
         try {
-          await AsyncStorage.setItem('user', JSON.stringify(user));
+          await AsyncStorage.setItem('parking-ppak-user', JSON.stringify(user));
           setKakaoUser(user);
         } catch {
           throw new Error('Fail to save userInfo');
@@ -19,7 +19,7 @@ export default function useKakaoAuthActions() {
       },
       logout: async () => {
         try {
-          await AsyncStorage.removeItem('user');
+          await AsyncStorage.removeItem('parking-ppak-user');
           setKakaoUser(null);
         } catch {
           throw new Error('Fail to remove user');
@@ -27,7 +27,7 @@ export default function useKakaoAuthActions() {
       },
       getKakaoLoginInfo: async () => {
         try {
-          const user = await AsyncStorage.getItem('user');
+          const user = await AsyncStorage.getItem('parking-ppak-user');
           if (user) {
             setKakaoUser(JSON.parse(user));
           }
