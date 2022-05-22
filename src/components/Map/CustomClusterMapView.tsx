@@ -28,16 +28,17 @@ type CustomClusterMapViewType = ClusterMarkerProperties & {
   minPoints: number;
   extent: number;
   nodeSize: number;
-  children: JSX.Element;
+  children?: JSX.Element;
   otherChildren?: JSX.Element;
   onClusterPress: () => void;
-  onRegionChangeComplete: (newRegion: Region) => void;
+  onRegionChangeComplete: (newRegion: Region, zoom: number) => void;
   region?: Region;
   initialRegion?: Region;
   superClusterRef: {current: SuperCluster | null};
   clusterColor?: string;
   clusterTextColor?: string;
   tracksViewChanges?: boolean;
+  [name: string]: any; // 이 부분은 다시 이런식으로 고쳤는데요. 이렇게 안하면, Cluster 라이브러리 쪽에서 children 관련 에러를 계속 뱉더라고요. 아직 이 부분이 익숙치 않아서 시간을 많이 잡아먹어 진도가 안나가서 일단 임시로 이렇게 작성했습니다.
 };
 
 function CustomClusterMapView(
@@ -121,8 +122,8 @@ function CustomClusterMapView(
       const markers = superCluster.getClusters(bBox, zoom);
       setMarkers(markers);
       setCurrentRegion(newRegion);
+      onRegionChangeComplete(newRegion, zoom);
     }
-    onRegionChangeComplete(newRegion);
   };
   const mapRef = useRef<MapView | null>(null);
 

@@ -11,6 +11,7 @@ type OilStationType = {
   brandName: string;
   price: number;
   onPress: () => void;
+  zoom: number;
 };
 
 function OilStationMarker({
@@ -19,6 +20,7 @@ function OilStationMarker({
   brandName,
   onPress = () => console.log('클릭'),
   price,
+  zoom,
 }: OilStationType) {
   const totalOilStationBrandList: Record<OIL_STATIONS, OIL_STATIONS> = {
     SKE: 'SKE',
@@ -52,7 +54,18 @@ function OilStationMarker({
 
   const getBrandLogo = (brand: string) => {
     if (brand === 'SKE' || brand === 'SOL') {
-      return <SVG name={brand} width={30} height={30} />;
+      return (
+        <SVG
+          name={brand}
+          width={30}
+          height={30}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        />
+      );
     }
     return (
       <Image
@@ -62,12 +75,26 @@ function OilStationMarker({
     );
   };
 
+  function getMarkerStyleChangesLevel(zoom: number) {
+    if (zoom <= 11) {
+      return {
+        width: 35,
+        height: 35,
+        borderRadius: 50,
+      };
+    } else {
+      return {
+        width: 90,
+        height: 40,
+      };
+    }
+  }
+
   return (
     <Marker coordinate={coordinate} title={title} onPress={onPress}>
       <BorderView
         style={{
-          width: 90,
-          height: 40,
+          ...getMarkerStyleChangesLevel(zoom),
           backgroundColor: '#fff',
           shadowColor: '#000',
           shadowOffset: {
@@ -81,11 +108,18 @@ function OilStationMarker({
         paddingHorizontal={5}
         borderRadius={4}
         borderColor={'#ddd'}>
-        <FlexView flexSet={['space-between', 'center', 'center']}>
+        <FlexView
+          flexSet={[
+            zoom <= 11 ? 'center' : 'space-between',
+            'center',
+            'center',
+          ]}>
           {getBrandLogo(brand)}
-          <TextComponent fontSize={16} fontWeight={'bold'}>
-            {price.toLocaleString()}
-          </TextComponent>
+          {zoom > 11 && (
+            <TextComponent fontSize={16} fontWeight={'bold'}>
+              {price.toLocaleString()}
+            </TextComponent>
+          )}
         </FlexView>
       </BorderView>
     </Marker>
