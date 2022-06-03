@@ -1,7 +1,7 @@
 export {};
 
 declare global {
-  type OilType = 'gasoline' | 'premiumGasoline' | 'diesel';
+  type OilType = 'LPG' | 'GASOLINE' | 'VIA' | 'PREMIUM' | 'ELECTRIC';
 
   type OilInfo = {
     type: OilType;

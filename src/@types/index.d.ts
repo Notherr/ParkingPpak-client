@@ -10,4 +10,9 @@ declare global {
     data: T;
     message: string;
   };
+
+  type ItemCard<T> = {
+    logo: T;
+    title: T;
+  };
 }

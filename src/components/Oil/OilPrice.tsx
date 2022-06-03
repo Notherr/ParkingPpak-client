@@ -4,15 +4,16 @@ import {StyleSheet} from 'react-native';
 import OilItem from './OilItem';
 
 const data: OilInfo[] = [
-  {type: 'gasoline', price: '2,0000.59', diff: 1.33, percentile: 0.07},
+  {type: 'GASOLINE', price: '2,0000.59', diff: 1.33, percentile: 0.07},
   {
-    type: 'premiumGasoline',
+    type: 'PREMIUM',
     price: '2,0000.59',
     diff: 1.33,
     percentile: 0.07,
   },
-  {type: 'diesel', price: '2,0000.59', diff: 1.33, percentile: 0.07},
+  {type: 'LPG', price: '2,0000.59', diff: 1.33, percentile: 0.07},
 ];
+
 export default function OilPrice() {
   return (
     <Container

@@ -5,6 +5,7 @@ const palette = {
   grey_4: '#8D8B8B',
   grey_5: '#AEADAD',
   grey_6: '#CDCDCD',
+  grey_7: '#eeeeee',
   blue_1: '#376EFD',
   blue_2: '#2C98FB',
   blue_3: '#2F4678',
