@@ -2,7 +2,7 @@ import React from 'react';
 import SVG from 'assets/SVG';
 import Images from 'assets/images';
 import {Image} from 'react-native';
-import {Marker, LatLng} from 'react-native-maps';
+import {Marker, LatLng, Callout} from 'react-native-maps';
 import {FlexView, BorderView, TextComponent} from 'components/common';
 
 type OilStationType = {
@@ -91,7 +91,7 @@ function OilStationMarker({
   }
 
   return (
-    <Marker coordinate={coordinate} title={title} onPress={onPress}>
+    <Marker coordinate={coordinate} onPress={onPress}>
       <BorderView
         style={{
           ...getMarkerStyleChangesLevel(zoom),

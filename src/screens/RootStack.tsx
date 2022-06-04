@@ -51,7 +51,7 @@ function RootStack() {
     <Stack.Navigator
       screenOptions={{headerShown: false}}
       initialRouteName={auth ? 'MainTab' : 'Auth'}>
-      {!auth ? (
+      {/* {!auth ? (
         <>
           <Stack.Screen name="MainTab" component={MainTab} />
           <Stack.Screen
@@ -67,7 +67,12 @@ function RootStack() {
         </>
       ) : (
         <Stack.Screen name="Auth" component={Auth} />
-      )}
+      )} */}
+      <Stack.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 }
