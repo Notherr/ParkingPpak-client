@@ -1,19 +1,9 @@
 import React, {useCallback, useRef} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  View,
-  Text,
-  StyleSheet,
-  StatusBar,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
+import {View, StyleSheet, StatusBar, TouchableOpacity} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheet, {BottomSheetRefProps} from '@/components/Map/BottomSheet';
-
-const {height: SCREEN_HEIGHT} = Dimensions.get('window');
-// const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
-const DEFAULT_SHOW_SCREEN_HEIGHT = -SCREEN_HEIGHT / 4;
+import {useScrollBottomSheet} from 'hooks';
 
 export default function SearchScreen({
   navigation,
@@ -22,6 +12,8 @@ export default function SearchScreen({
   const goBack = () => {
     navigation.pop();
   };
+
+  const {DEFAULT_SHOW_SCREEN_HEIGHT} = useScrollBottomSheet();
 
   const ref = useRef<BottomSheetRefProps>(null);
   const onPress = useCallback(() => {

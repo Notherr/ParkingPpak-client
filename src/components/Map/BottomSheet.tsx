@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 import {GestureDetector, Gesture} from 'react-native-gesture-handler';
+import {useScrollBottomSheet} from 'hooks';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -26,47 +27,51 @@ export type BottomSheetRefProps = {
 };
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
-const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
-const DEFAULT_SHOW_SCREEN_HEIGHT = -SCREEN_HEIGHT / 4;
+// const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
+// const DEFAULT_SHOW_SCREEN_HEIGHT = -SCREEN_HEIGHT / 4;
 
 function BottomSheet(
   {children}: BottomSheetProps,
   ref: ForwardedRef<BottomSheetRefProps>,
 ) {
+  const {
+    scrollTo,
+    isActive,
+    translateY,
+    defaultContext,
+    DEFAULT_SHOW_SCREEN_HEIGHT,
+    MAX_TRANSLATE_Y,
+  } = useScrollBottomSheet();
+
   const [isMaxHeight, setIsMaxHeight] = useState(false);
-  const translateY = useSharedValue(0);
+  // const translateY = useSharedValue(0);
   const context = useSharedValue({y: 0});
-  const active = useSharedValue(false);
+  // const active = useSharedValue(false);
 
-  const scrollTo = useCallback((destination: number) => {
-    'worklet';
-    active.value = destination !== 0;
-    translateY.value = withSpring(destination, {damping: 50});
-  }, []);
+  // const scrollTo = useCallback((destination: number) => {
+  //   'worklet';
+  //   active.value = destination !== 0;
+  //   translateY.value = withSpring(destination, {damping: 50});
+  // }, []);
 
-  const isActive = useCallback(() => {
-    return active.value;
-  }, []);
+  // const isActive = useCallback(() => {
+  //   return active.value;
+  // }, []);
 
   useImperativeHandle(ref, () => ({scrollTo, isActive}), [scrollTo, isActive]);
 
   const gesture = Gesture.Pan()
     .onStart(() => {
-      context.value = {y: translateY.value};
+      defaultContext.value = {y: translateY.value};
     })
     .onUpdate(event => {
-      translateY.value = event.translationY + context.value.y;
+      translateY.value = event.translationY + defaultContext.value.y;
       translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
-      console.log('tranx>>>', translateY.value);
     })
     .onEnd(() => {
-      // if (translateY.value > DEFAULT_SHOW_SCREEN_HEIGHT) {
-      // DEFAULT_SHOW_SCREEN_HEIGHT === -280
-      if (translateY.value > -740 && isMaxHeight) {
-        // scrollTo(0);
+      if (translateY.value > MAX_TRANSLATE_Y + 50 && isMaxHeight) {
         scrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
         setIsMaxHeight(false);
-        // } else if (translateY.value < -SCREEN_HEIGHT / 1.5) {
       } else if (translateY.value < DEFAULT_SHOW_SCREEN_HEIGHT) {
         scrollTo(MAX_TRANSLATE_Y);
         setIsMaxHeight(true);
@@ -92,7 +97,7 @@ function BottomSheet(
   });
 
   useEffect(() => {
-    scrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
+    scrollTo(0);
   }, []);
 
   return (
