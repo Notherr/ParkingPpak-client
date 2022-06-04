@@ -27,6 +27,7 @@ function RootStack() {
   useEffect(() => {
     (async () => {
       const userToken = await authStorage.get();
+
       if (userToken) {
         setAuth(true);
       }
@@ -50,7 +51,7 @@ function RootStack() {
     <Stack.Navigator
       screenOptions={{headerShown: false}}
       initialRouteName={auth ? 'MainTab' : 'Auth'}>
-      {auth ? (
+      {!auth ? (
         <>
           <Stack.Screen name="MainTab" component={MainTab} />
           <Stack.Screen

@@ -29,6 +29,7 @@ const latitudeDelta = 0.04;
 const longitudeDelta = 0.04;
 
 function GoogleMap() {
+  const [zoom, setZoom] = useState(12);
   const mapRef = useRef<MapView>(null);
   const {latlng} = useGetCurrentPosition();
 
@@ -65,8 +66,9 @@ function GoogleMap() {
     });
   });
 
-  const onRegionChangeComplete = (newRegion: Region) => {
+  const onRegionChangeComplete = (newRegion: Region, zoom: number) => {
     setRegion(newRegion);
+    setZoom(zoom);
   };
 
   const onResearchOilStation = () => refetch();
@@ -105,6 +107,7 @@ function GoogleMap() {
           {oilStations?.map(oilStation => (
             <OilStationMarker
               key={oilStation.UNI_ID}
+              zoom={zoom}
               title={oilStation.OS_NM}
               brandName={oilStation.POLL_DIV_CD}
               coordinate={{

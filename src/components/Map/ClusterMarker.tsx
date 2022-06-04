@@ -5,8 +5,8 @@ import {LatLng, Marker} from 'react-native-maps';
 import {returnMarkerStyle} from 'utils';
 
 type ClusteredMarkerType = {
-  point?: Point;
-  properties?: GeoJsonProperties;
+  point: Point | undefined;
+  properties: GeoJsonProperties | undefined;
   onPress?: () => void;
   clusterColor?: string;
   clusterTextColor?: string;
@@ -21,7 +21,7 @@ const ClusteredMarker = ({
   point,
   tracksViewChanges,
 }: ClusteredMarkerType) => {
-  const points: number = properties?.point_count;
+  const points = properties?.point_count;
   const {width, height, fontSize} = returnMarkerStyle(points);
 
   return (
