@@ -10,8 +10,7 @@ import {Formik} from 'formik';
 import {BorderedInput, CustomButton} from '@components/common';
 import * as Yup from 'yup';
 import AntIcon from 'react-native-vector-icons/AntDesign';
-import {useKakaoAuthActions} from 'recoil/actions';
-import {useLocalAuthActions} from 'recoil/actions';
+import {useKakaoAuthActions, useLocalAuthActions} from 'recoil/actions';
 
 export default function LoginScreen() {
   const navigation = useNavigation<AuthStackNavigationProps>();

@@ -43,7 +43,11 @@ export class APIService {
       .then(this.onSuccess)
       .catch(this.onError);
 
-  public put = (url: string, data?: any, config?: AxiosRequestConfig) =>
+  public put = <T>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<APIData<T>> =>
     this.instance
       .put(url, data, config)
       .then(this.onSuccess)

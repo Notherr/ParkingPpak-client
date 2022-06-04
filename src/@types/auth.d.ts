@@ -15,9 +15,10 @@ declare global {
   type UserInfo = {
     email: string;
     name: string;
-    oilType: Nullable<OilType>;
+    jwt: string;
     card: Nullable<string>;
-    navi: Nullable<string>;
+    naviType: Nullable<NavigationType>;
+    oilType: Nullable<OilType>;
   };
 
   type KakaoAuthUser = {

@@ -18,9 +18,10 @@ export type RootStackNavigationProps =
 const Stack = createNativeStackNavigator<RootStackParams>();
 
 function RootStack() {
-  const [auth, setAuth] = useState<boolean>(false);
+  const setLocalUser = useSetRecoilState(LocalAuthState);
   const setIsLoading = useSetRecoilState(isLoading);
   const isLodingState = useRecoilValue(isLoading);
+  const [auth, setAuth] = useState<boolean>(false);
   const userInfo = useRecoilValue(LocalAuthState);
 
   // localStorage에 내 정보가 저장되어있는지 확인
@@ -29,6 +30,7 @@ function RootStack() {
       const userToken = await authStorage.get();
 
       if (userToken) {
+        setLocalUser(userToken);
         setAuth(true);
       }
       setTimeout(() => setIsLoading(false), 2000);
