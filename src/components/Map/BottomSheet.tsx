@@ -15,7 +15,7 @@ import Animated, {
   Extrapolate,
 } from 'react-native-reanimated';
 import {useSetRecoilState} from 'recoil';
-import {isShowBottomSheet} from '@/recoil/atoms';
+import {isShowBottomSheetState, isMarkerState} from '@/recoil/atoms';
 
 type BottomSheetProps = {
   children: ReactNode | undefined;
@@ -39,7 +39,8 @@ function BottomSheet(
     DEFAULT_SHOW_SCREEN_HEIGHT,
     MAX_TRANSLATE_Y,
   } = useScrollBottomSheet();
-  const setIsShowBottomSheetState = useSetRecoilState(isShowBottomSheet);
+  const setIsShowBottomSheet = useSetRecoilState(isShowBottomSheetState);
+  const setIsMarker = useSetRecoilState(isMarkerState);
   const [isMaxHeight, setIsMaxHeight] = useState(false);
 
   useImperativeHandle(ref, () => ({scrollTo, isActive}), [scrollTo, isActive]);
@@ -63,7 +64,8 @@ function BottomSheet(
         translateY.value > DEFAULT_SHOW_SCREEN_HEIGHT &&
         !isMaxHeight
       ) {
-        setIsShowBottomSheetState(true);
+        setIsShowBottomSheet(true);
+        setIsMarker(null);
         scrollTo(0);
       }
     });
@@ -94,7 +96,6 @@ function BottomSheet(
     </GestureDetector>
   );
 }
-// );
 
 const styles = StyleSheet.create({
   bottomSheetContainer: {

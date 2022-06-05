@@ -1,11 +1,20 @@
-import {atom} from 'recoil';
+import {atom, selector} from 'recoil';
 
-export const isShowBottomSheet = atom<boolean>({
-  key: 'isShowBottomSheet',
+export const isShowBottomSheetState = atom<boolean>({
+  key: 'map/isShowBottomSheetState',
   default: true,
 });
 
-export const isMarkerInfo = atom<OilStationType | null>({
-  key: 'isMarkerInfo',
+export const isMarkerState = atom<OilStationType | null>({
+  key: 'map/isMarkerState',
   default: null,
+});
+
+export const isClickMarkerState = selector({
+  key: 'map/isClickMarkerState',
+  get: ({get}) => {
+    const showBottomSheet = get(isShowBottomSheetState);
+    const markerInfo = get(isMarkerState);
+    return Boolean(showBottomSheet && !markerInfo);
+  },
 });

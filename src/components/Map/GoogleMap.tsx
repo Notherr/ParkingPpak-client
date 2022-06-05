@@ -1,10 +1,14 @@
 import React, {useRef, useState, useCallback} from 'react';
 import {useQuery} from 'react-query';
 import proj4 from 'proj4';
-import {Image, ActivityIndicator} from 'react-native';
+import {Image, ActivityIndicator, View, Text} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
-import {isShowBottomSheet, isMarkerInfo} from '@/recoil/atoms';
+import {
+  isShowBottomSheetState,
+  isMarkerState,
+  isClickMarkerState,
+} from '@/recoil/atoms';
 import {
   OilStationMarker,
   CenterMarker,
@@ -16,7 +20,6 @@ import {
 import {FlexView} from 'components/common';
 import {getAroundAllOilStation} from 'api';
 import images from 'assets/images';
-import {Text} from 'react-native-svg';
 import {useGetCurrentPosition, useScrollBottomSheet} from 'hooks';
 
 //아래 proj4 라이브러리는 google map의 지도 위치 표기 방법은 WGS84방식, 오피넷의 위치 표기방식은 TM128방식이므로, 이를 서로 변경해주는 작업입니다.
@@ -33,9 +36,10 @@ const latitudeDelta = 0.04;
 const longitudeDelta = 0.04;
 
 function GoogleMap() {
-  const isShowBottomSheetState = useRecoilValue(isShowBottomSheet);
-  const setIsShowBottomSheetState = useSetRecoilState(isShowBottomSheet);
-  const setIsMarkerInfo = useSetRecoilState(isMarkerInfo);
+  const isClickMarker = useRecoilValue(isClickMarkerState);
+  const setIsShowBottomSheet = useSetRecoilState(isShowBottomSheetState);
+  const setMarker = useSetRecoilState(isMarkerState);
+
   const [zoom, setZoom] = useState(12);
   const mapRef = useRef<MapView>(null);
   const {latlng} = useGetCurrentPosition();
@@ -48,16 +52,13 @@ function GoogleMap() {
   const {DEFAULT_SHOW_SCREEN_HEIGHT} = useScrollBottomSheet();
   const ref = useRef<BottomSheetRefProps>(null);
 
-  const onPress = useCallback(marker => {
+  const onPressMarker = useCallback(marker => {
+    setMarker(marker);
     const isActive = ref?.current?.isActive();
-    setIsMarkerInfo(marker);
     if (isActive) {
-      console.log('@11@');
-      setIsShowBottomSheetState(true);
-      // ref?.current?.scrollTo(0);
+      setIsShowBottomSheet(true);
     } else {
-      console.log('@22@');
-      setIsShowBottomSheetState(false);
+      setIsShowBottomSheet(false);
       ref?.current?.scrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
     }
   }, []);
@@ -90,7 +91,8 @@ function GoogleMap() {
 
   const onRegionChangeComplete = (newRegion: Region, zoom: number) => {
     ref?.current?.scrollTo(0);
-    setIsShowBottomSheetState(true);
+    setIsShowBottomSheet(true);
+    setMarker(null);
     setRegion(newRegion);
     setZoom(zoom);
   };
@@ -105,8 +107,6 @@ function GoogleMap() {
   if (!region) {
     return <ActivityIndicator />;
   }
-
-  console.log('oilStations>>>,', oilStations);
 
   return (
     <>
@@ -135,20 +135,12 @@ function GoogleMap() {
               marker={oilStation}
               key={oilStation.UNI_ID}
               zoom={zoom}
-              // title={oilStation.OS_NM}
-              // brandName={oilStation.POLL_DIV_CD}
-              // coordinate={{
-              // longitude: oilStation.GIS_Y_COOR,
-              // latitude: oilStation.GIS_X_COOR,
-              // }}
-              // price={oilStation.PRICE}
-              onPress={onPress}
-              // onPress={() => console.log('@@@')}
+              onPress={onPressMarker}
             />
           ))}
         </CustomClusterMapView>
       </FlexView>
-      {isShowBottomSheetState && (
+      {isClickMarker && (
         <SearchButton
           icon="refresh"
           name="여기에서 재 검색"
@@ -158,7 +150,9 @@ function GoogleMap() {
       )}
       <MyLocationButton onPress={goMyLocation} />
       <BottomSheet ref={ref}>
-        <Text>12</Text>
+        <View style={{flex: 1, backgroundColor: 'orange'}}>
+          <Text>UI 구현중</Text>
+        </View>
       </BottomSheet>
     </>
   );

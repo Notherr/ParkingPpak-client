@@ -1,19 +1,17 @@
 import React from 'react';
 import {useRecoilValue} from 'recoil';
-import {isShowBottomSheet} from '@/recoil/atoms';
+import {isClickMarkerState} from '@/recoil/atoms';
 import {View, StyleSheet} from 'react-native';
-import {SearchBox, Swtich, ListButton, GoogleMap} from 'components/Map';
+import {SearchBox, Swtich, GoogleMap} from 'components/Map';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 function MapScreen({navigation, route}: NativeStackScreenProps<any>) {
-  const isShowBottomSheetState = useRecoilValue(isShowBottomSheet);
+  const isClickMarker = useRecoilValue(isClickMarkerState);
 
   return (
     <View style={styles.box}>
       <GoogleMap />
-      {isShowBottomSheetState && (
-        <SearchBox navigation={navigation} route={route} />
-      )}
+      {isClickMarker && <SearchBox navigation={navigation} route={route} />}
       <Swtich />
       {/* <ListButton navigation={navigation} route={route} /> */}
     </View>

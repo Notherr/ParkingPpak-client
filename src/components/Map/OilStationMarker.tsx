@@ -8,7 +8,7 @@ import {FlexView, BorderView, TextComponent} from 'components/common';
 type OilStationMarkerProps = {
   marker: OilStationType;
 
-  onPress: () => void;
+  onPress: (marker: OilStationType) => void;
   zoom: number;
 };
 
@@ -17,8 +17,6 @@ function OilStationMarker({
   onPress = () => console.log('클릭'),
   zoom,
 }: OilStationMarkerProps) {
-  console.log('mar>>', marker);
-
   const brandName = marker.POLL_DIV_CD;
   const coordinate = {
     longitude: marker.GIS_Y_COOR,
@@ -93,7 +91,7 @@ function OilStationMarker({
   }
 
   return (
-    <Marker coordinate={coordinate} onPress={() => onPress()}>
+    <Marker coordinate={coordinate} onPress={() => onPress(marker)}>
       <BorderView
         style={{
           ...getMarkerStyleChangesLevel(zoom),

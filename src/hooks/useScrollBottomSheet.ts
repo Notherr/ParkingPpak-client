@@ -4,7 +4,7 @@ import {useSharedValue, withSpring} from 'react-native-reanimated';
 
 function useScrollBottomSheet() {
   const {height: SCREEN_HEIGHT} = Dimensions.get('window');
-  const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
+  const MAX_TRANSLATE_Y = -SCREEN_HEIGHT;
   const DEFAULT_SHOW_SCREEN_HEIGHT = -SCREEN_HEIGHT / 4;
 
   const translateY = useSharedValue(0);
