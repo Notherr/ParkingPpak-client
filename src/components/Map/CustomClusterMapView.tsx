@@ -20,6 +20,8 @@ import {
 } from 'utils/map';
 import {ClusterMarker} from 'components/Map';
 import {palette} from '@/constant';
+import {useSetRecoilState} from 'recoil';
+import {isShowBottomSheet} from '@/recoil/atoms';
 
 type CustomClusterMapViewType = ClusterMarkerProperties & {
   radius: number;
@@ -60,6 +62,7 @@ function CustomClusterMapView(
   }: CustomClusterMapViewType,
   ref: Ref<MapView> | MapView,
 ) {
+  const setIsShowBottomSheetState = useSetRecoilState(isShowBottomSheet);
   const [markers, setMarkers] = useState<
     Array<PointFeature<GeoJsonProperties> | null>
   >([]);
@@ -116,6 +119,7 @@ function CustomClusterMapView(
   ]);
 
   const _onRegionChangeComplete = (newRegion: Region) => {
+    setIsShowBottomSheetState(true);
     if (superCluster && currentRegion) {
       const bBox = calculateBBox(currentRegion);
       const zoom = returnMapZoom(newRegion, bBox, minZoom);
@@ -136,6 +140,7 @@ function CustomClusterMapView(
           (ref as MutableRefObject<any>).current = map;
         }
       }}
+      onPress={() => console.log('맵 클릭>>')}
       style={styles.map}
       onRegionChangeComplete={_onRegionChangeComplete}>
       {markers.map((marker, idx) =>

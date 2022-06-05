@@ -1,6 +1,5 @@
 import React, {
   useEffect,
-  useCallback,
   forwardRef,
   useImperativeHandle,
   ForwardedRef,
@@ -11,12 +10,12 @@ import {View, StyleSheet, Dimensions} from 'react-native';
 import {GestureDetector, Gesture} from 'react-native-gesture-handler';
 import {useScrollBottomSheet} from 'hooks';
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
   interpolate,
   Extrapolate,
-  withSpring,
 } from 'react-native-reanimated';
+import {useSetRecoilState} from 'recoil';
+import {isShowBottomSheet} from '@/recoil/atoms';
 
 type BottomSheetProps = {
   children: ReactNode | undefined;
@@ -27,8 +26,6 @@ export type BottomSheetRefProps = {
 };
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
-// const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
-// const DEFAULT_SHOW_SCREEN_HEIGHT = -SCREEN_HEIGHT / 4;
 
 function BottomSheet(
   {children}: BottomSheetProps,
@@ -42,21 +39,8 @@ function BottomSheet(
     DEFAULT_SHOW_SCREEN_HEIGHT,
     MAX_TRANSLATE_Y,
   } = useScrollBottomSheet();
-
+  const setIsShowBottomSheetState = useSetRecoilState(isShowBottomSheet);
   const [isMaxHeight, setIsMaxHeight] = useState(false);
-  // const translateY = useSharedValue(0);
-  const context = useSharedValue({y: 0});
-  // const active = useSharedValue(false);
-
-  // const scrollTo = useCallback((destination: number) => {
-  //   'worklet';
-  //   active.value = destination !== 0;
-  //   translateY.value = withSpring(destination, {damping: 50});
-  // }, []);
-
-  // const isActive = useCallback(() => {
-  //   return active.value;
-  // }, []);
 
   useImperativeHandle(ref, () => ({scrollTo, isActive}), [scrollTo, isActive]);
 
@@ -79,6 +63,7 @@ function BottomSheet(
         translateY.value > DEFAULT_SHOW_SCREEN_HEIGHT &&
         !isMaxHeight
       ) {
+        setIsShowBottomSheetState(true);
         scrollTo(0);
       }
     });
