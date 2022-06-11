@@ -51,7 +51,7 @@ function RootStack() {
     <Stack.Navigator
       screenOptions={{headerShown: false}}
       initialRouteName={auth ? 'MainTab' : 'Auth'}>
-      {auth ? (
+      {!auth ? (
         <>
           <Stack.Screen name="MainTab" component={MainTab} />
           <Stack.Screen

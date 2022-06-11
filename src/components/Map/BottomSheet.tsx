@@ -3,7 +3,6 @@ import React, {
   forwardRef,
   useImperativeHandle,
   ForwardedRef,
-  ReactNode,
   useState,
 } from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
@@ -16,14 +15,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import {useSetRecoilState} from 'recoil';
 import {isShowBottomSheetState, isMarkerState} from '@/recoil/atoms';
-
-type BottomSheetProps = {
-  children: ReactNode | undefined;
-};
-export type BottomSheetRefProps = {
-  scrollTo: (destination: number) => void;
-  isActive: () => boolean;
-};
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 

@@ -15,6 +15,7 @@ export const isClickMarkerState = selector({
   get: ({get}) => {
     const showBottomSheet = get(isShowBottomSheetState);
     const markerInfo = get(isMarkerState);
-    return Boolean(showBottomSheet && !markerInfo);
+
+    return showBottomSheet && !markerInfo;
   },
 });

@@ -12,11 +12,7 @@ type OilStationMarkerProps = {
   zoom: number;
 };
 
-function OilStationMarker({
-  marker,
-  onPress = () => console.log('클릭'),
-  zoom,
-}: OilStationMarkerProps) {
+function OilStationMarker({marker, onPress, zoom}: OilStationMarkerProps) {
   const brandName = marker.POLL_DIV_CD;
   const coordinate = {
     longitude: marker.GIS_Y_COOR,
