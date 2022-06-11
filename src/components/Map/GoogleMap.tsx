@@ -52,12 +52,15 @@ function GoogleMap() {
   const {DEFAULT_SHOW_SCREEN_HEIGHT} = useScrollBottomSheet();
   const ref = useRef<BottomSheetRefProps>(null);
 
+  console.log('전역에서 ref>>', ref);
+
   const onPressMarker = useCallback(marker => {
     setMarker(marker);
     const isActive = ref?.current?.isActive();
     if (isActive) {
       setIsShowBottomSheet(true);
     } else {
+      console.log('ref>>', ref);
       setIsShowBottomSheet(false);
       ref?.current?.scrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
     }
