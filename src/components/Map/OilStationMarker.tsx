@@ -2,26 +2,22 @@ import React from 'react';
 import SVG from 'assets/SVG';
 import Images from 'assets/images';
 import {Image} from 'react-native';
-import {Marker, LatLng} from 'react-native-maps';
+import {Marker} from 'react-native-maps';
 import {FlexView, BorderView, TextComponent} from 'components/common';
 
-type OilStationType = {
-  coordinate: LatLng;
-  title: string;
-  brandName: string;
-  price: number;
-  onPress: () => void;
+type OilStationMarkerProps = {
+  marker: OilStationType;
+
+  onPress: (marker: OilStationType) => void;
   zoom: number;
 };
 
-function OilStationMarker({
-  coordinate,
-  title,
-  brandName,
-  onPress = () => console.log('클릭'),
-  price,
-  zoom,
-}: OilStationType) {
+function OilStationMarker({marker, onPress, zoom}: OilStationMarkerProps) {
+  const brandName = marker.POLL_DIV_CD;
+  const coordinate = {
+    longitude: marker.GIS_Y_COOR,
+    latitude: marker.GIS_X_COOR,
+  };
   const totalOilStationBrandList: Record<OIL_STATIONS, OIL_STATIONS> = {
     SKE: 'SKE',
     HDO: 'HDO',
@@ -91,7 +87,7 @@ function OilStationMarker({
   }
 
   return (
-    <Marker coordinate={coordinate} title={title} onPress={onPress}>
+    <Marker coordinate={coordinate} onPress={() => onPress(marker)}>
       <BorderView
         style={{
           ...getMarkerStyleChangesLevel(zoom),
@@ -117,7 +113,7 @@ function OilStationMarker({
           {getBrandLogo(brand)}
           {zoom > 11 && (
             <TextComponent fontSize={16} fontWeight={'bold'}>
-              {price.toLocaleString()}
+              {marker.PRICE.toLocaleString()}
             </TextComponent>
           )}
         </FlexView>

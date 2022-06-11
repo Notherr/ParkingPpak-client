@@ -95,4 +95,12 @@ declare global {
       index: number;
     };
   };
+
+  type BottomSheetProps = {
+    children: ReactNode | undefined;
+  };
+  export type BottomSheetRefProps = {
+    scrollTo: (destination: number) => void;
+    isActive: () => boolean;
+  };
 }
