@@ -62,7 +62,7 @@ const renderScene = ({
   }
 };
 
-const ROUTES: RouteType[] = [
+const routes: RouteType[] = [
   {key: 'PARKING_LOT', title: '주차장'},
   {key: 'GAS_STATION', title: '주유소'},
 ];
@@ -73,7 +73,7 @@ export default function TabViewExample() {
 
   return (
     <TabView
-      navigationState={{index, routes: ROUTES}}
+      navigationState={{index, routes}}
       renderScene={renderScene}
       onIndexChange={setIndex}
       initialLayout={{width: layout.width}}
