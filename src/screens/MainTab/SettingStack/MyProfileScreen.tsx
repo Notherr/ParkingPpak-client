@@ -25,14 +25,16 @@ function MyProfileScreen({navigation}: NativeStackScreenProps<any>) {
           </Pressable>
         </SizedView>
         <SizedView style={styles.mainButtonWrapper} width="100%" height={170}>
-          <Pressable style={styles.mainButton}>
+          <Pressable
+            style={styles.mainButton}
+            onPress={() => navigation.navigate('Like')}>
             <MaterialIcon
               name="store-outline"
               color={palette.blue_1}
               style={styles.mainButtonIcon}
               size={30}
             />
-            <Text style={styles.mainButtonText}>자주 가는 곳</Text>
+            <Text style={styles.mainButtonText}>찜 목록</Text>
           </Pressable>
           <Pressable
             style={styles.mainButton}

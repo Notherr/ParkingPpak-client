@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MyProfileScreen from './MyProfileScreen';
 import CardScreen from './CardScreen';
 import OilScreen from './OilScreen';
+import LikeScreen from './LikeScreen';
 import NavigationScreen from './NavigationScreen';
 
 const Stack = createNativeStackNavigator();
@@ -14,6 +15,11 @@ function SettingStack() {
         name="MyProfile"
         component={MyProfileScreen}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Like"
+        component={LikeScreen}
+        options={{title: '찜 목록'}}
       />
       <Stack.Screen
         name="Card"
