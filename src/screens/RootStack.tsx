@@ -6,7 +6,6 @@ import {
 import authStorage from '@/storages/authStorage';
 import MainTab from './MainTab';
 import {MapStack} from '@/screens/Map';
-import {SearchScreen} from '@/screens/Search';
 import Auth from './Auth';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {isLoading, LocalAuthState} from 'recoil/atoms';
@@ -59,11 +58,6 @@ function RootStack() {
           <Stack.Screen
             name="Map"
             component={MapStack}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Search"
-            component={SearchScreen}
             options={{headerShown: false}}
           />
         </>
