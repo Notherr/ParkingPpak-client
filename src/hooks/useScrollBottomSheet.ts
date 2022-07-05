@@ -1,4 +1,4 @@
-import {useCallback, useMemo} from 'react';
+import {useCallback} from 'react';
 import {Dimensions} from 'react-native';
 import {useSharedValue, withSpring} from 'react-native-reanimated';
 
@@ -28,6 +28,7 @@ function useScrollBottomSheet() {
     scrollTo,
     isActive,
     defaultContext,
+    SCREEN_HEIGHT,
   };
 }
 

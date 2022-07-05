@@ -1,9 +1,9 @@
 import React, {useRef, useState, useCallback} from 'react';
 import {useQuery} from 'react-query';
 import proj4 from 'proj4';
-import {Image, ActivityIndicator, View, Text} from 'react-native';
+import {Image, ActivityIndicator} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
+import {useRecoilValue, useSetRecoilState, useRecoilState} from 'recoil';
 import {
   isShowBottomSheetState,
   isMarkerState,
@@ -16,6 +16,7 @@ import {
   MyLocationButton,
   CustomClusterMapView,
   BottomSheet,
+  SelectMarkerCard,
 } from 'components/Map';
 import {FlexView} from 'components/common';
 import {getAroundAllOilStation} from 'api';
@@ -38,7 +39,7 @@ const longitudeDelta = 0.04;
 function GoogleMap() {
   const isClickMarker = useRecoilValue(isClickMarkerState);
   const setIsShowBottomSheet = useSetRecoilState(isShowBottomSheetState);
-  const setMarker = useSetRecoilState(isMarkerState);
+  const [marker, setMarker] = useRecoilState(isMarkerState);
 
   const [zoom, setZoom] = useState(12);
   const mapRef = useRef<MapView>(null);
@@ -52,15 +53,12 @@ function GoogleMap() {
   const {DEFAULT_SHOW_SCREEN_HEIGHT} = useScrollBottomSheet();
   const ref = useRef<BottomSheetRefProps>(null);
 
-  console.log('전역에서 ref>>', ref);
-
   const onPressMarker = useCallback(marker => {
     setMarker(marker);
     const isActive = ref?.current?.isActive();
     if (isActive) {
       setIsShowBottomSheet(true);
     } else {
-      console.log('ref>>', ref);
       setIsShowBottomSheet(false);
       ref?.current?.scrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
     }
@@ -153,9 +151,7 @@ function GoogleMap() {
       )}
       <MyLocationButton onPress={goMyLocation} />
       <BottomSheet ref={ref}>
-        <View style={{flex: 1, backgroundColor: 'orange'}}>
-          <Text>UI 구현중</Text>
-        </View>
+        {marker && <SelectMarkerCard marker={marker} />}
       </BottomSheet>
     </>
   );

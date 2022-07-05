@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {CSSProperties} from 'react';
 import {palette} from '@constant/index';
 import {
   StyleSheet,
@@ -17,6 +17,7 @@ type CustomButtonProps = PressableProps & {
   color?: ButtonColor;
   size?: ButtonSize;
   iconName?: string;
+  style?: any;
 };
 
 export default function CustomButton({
@@ -25,6 +26,7 @@ export default function CustomButton({
   color = 'primary',
   size = 'medium',
   iconName,
+  style,
   ...rest
 }: CustomButtonProps) {
   return (
@@ -33,6 +35,7 @@ export default function CustomButton({
         styles.button,
         buttonStyles(size, color, !!disabled).button,
         Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
+        {...style},
       ]}
       disabled={disabled}
       {...rest}>

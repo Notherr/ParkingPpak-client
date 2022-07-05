@@ -84,7 +84,7 @@ export default function ExploreScreen({
   ) => {
     const markerID = mapEventData._targetInst.return.key;
     let x = markerID * CARD_WIDTH + markerID * 20;
-    console.log('x>>>', x);
+
     if (Platform.OS === 'ios') {
       x = x - SPACING_FOR_CARD_INSET;
     }

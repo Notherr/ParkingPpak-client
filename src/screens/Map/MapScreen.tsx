@@ -2,11 +2,6 @@ import React from 'react';
 import {useRecoilValue} from 'recoil';
 import {isClickMarkerState} from '@/recoil/atoms';
 import {View, StyleSheet} from 'react-native';
-// import {SearchBox, Swtich} from '@components/Map';
-// import GoogleMap from '../../components/Map/GoogleMap';
-// import SearchBox from '../../components/Map/SearchBox';
-// import Swtich from '../../components/Map/Swtich';
-// import {GoogleMap, SearchBox, Swtich} from '@/components/Map';
 import {SearchBox, Swtich, GoogleMap} from 'components/Map';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 

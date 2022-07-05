@@ -91,8 +91,6 @@ export default function RegisterScreen() {
             errors,
             touched,
           }) => {
-            console.log('errors>>', errors);
-            console.log('touched>>', touched);
             return (
               <>
                 <BorderedInput
