@@ -18,25 +18,9 @@ function useGetOilStationBrandLogo(marker: OilStationType) {
     ETC: 'ETC',
   };
 
-  const noSvgImageBrandList: Pick<
-    typeof totalOilStationBrandList,
-    'HDO' | 'FRUGAL' | 'GSC' | 'NHO' | 'RTO' | 'RTX' | 'ETC'
-  > = {
-    HDO: 'HDO',
-    FRUGAL: 'FRUGAL',
-    GSC: 'GSC',
-    NHO: 'NHO',
-    RTO: 'RTO',
-    RTX: 'RTX',
-    ETC: 'ETC',
-  };
+  const brand = totalOilStationBrandList[brandName];
 
-  const brand =
-    totalOilStationBrandList[
-      brandName as keyof typeof totalOilStationBrandList
-    ];
-
-  const getBrandLogo = (brand: string) => {
+  const getBrandLogo = (brand: OIL_STATIONS) => {
     if (brand === 'SKE' || brand === 'SOL') {
       return (
         <SVG
@@ -51,12 +35,7 @@ function useGetOilStationBrandLogo(marker: OilStationType) {
         />
       );
     }
-    return (
-      <Image
-        source={Images[brand as keyof typeof noSvgImageBrandList]}
-        style={{width: 25, height: 25}}
-      />
-    );
+    return <Image source={Images[brand]} style={{width: 25, height: 25}} />;
   };
 
   const logo = getBrandLogo(brand);
