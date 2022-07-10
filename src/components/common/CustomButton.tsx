@@ -17,7 +17,7 @@ type CustomButtonProps = PressableProps & {
   color?: ButtonColor;
   size?: ButtonSize;
   iconName?: string;
-  style?: any;
+  style?: CSSProperties;
 };
 
 export default function CustomButton({
@@ -35,7 +35,7 @@ export default function CustomButton({
         styles.button,
         buttonStyles(size, color, !!disabled).button,
         Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
-        {...style},
+        {style},
       ]}
       disabled={disabled}
       {...rest}>
