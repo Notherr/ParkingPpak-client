@@ -3,7 +3,6 @@ import React, {
   forwardRef,
   useImperativeHandle,
   ForwardedRef,
-  useState,
 } from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 import {GestureDetector, Gesture} from 'react-native-gesture-handler';
@@ -13,8 +12,12 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from 'react-native-reanimated';
-import {useSetRecoilState} from 'recoil';
-import {isShowBottomSheetState, isMarkerState} from '@/recoil/atoms';
+import {useSetRecoilState, useRecoilState} from 'recoil';
+import {
+  isShowBottomSheetState,
+  isMarkerState,
+  isBottomSheetMaxHeightState,
+} from '@/recoil/atoms';
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
@@ -32,7 +35,9 @@ function BottomSheet(
   } = useScrollBottomSheet();
   const setIsShowBottomSheet = useSetRecoilState(isShowBottomSheetState);
   const setIsMarker = useSetRecoilState(isMarkerState);
-  const [isMaxHeight, setIsMaxHeight] = useState(false);
+  const [isMaxHeight, setIsMaxHeight] = useRecoilState(
+    isBottomSheetMaxHeightState,
+  );
 
   useImperativeHandle(ref, () => ({scrollTo, isActive}), [scrollTo, isActive]);
 
@@ -82,6 +87,7 @@ function BottomSheet(
     <GestureDetector gesture={gesture}>
       <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]}>
         <View style={styles.line} />
+
         {children}
       </Animated.View>
     </GestureDetector>

@@ -46,7 +46,7 @@ declare global {
 
   type OilStationType = {
     UNI_ID: string;
-    POLL_DIV_CD: string;
+    POLL_DIV_CD: OIL_STATIONS;
     OS_NM: string;
     PRICE: number;
     DISTANCE: number;

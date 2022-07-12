@@ -19,3 +19,8 @@ export const isClickMarkerState = selector({
     return showBottomSheet && !markerInfo;
   },
 });
+
+export const isBottomSheetMaxHeightState = atom<boolean>({
+  key: 'map/isBottomSheetMaxHeight',
+  default: false,
+});
