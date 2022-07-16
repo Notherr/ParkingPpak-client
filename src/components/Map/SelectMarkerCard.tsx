@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useRef, useEffect} from 'react';
+import MapView, {Region} from 'react-native-maps';
 import {useRecoilValue} from 'recoil';
 import Icons from 'react-native-vector-icons/MaterialIcons';
-import {View} from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import {palette} from '@/constant';
 import {useScrollBottomSheet, useGetOilStationBrandLogo} from 'hooks';
 import {isBottomSheetMaxHeightState} from '@/recoil/atoms';
@@ -12,6 +13,7 @@ import {
   CustomButton,
   BorderView,
 } from 'components/common';
+import {CurrentLocationMarker} from 'components/Map';
 
 type SelectMarkerCardType = {
   marker: OilStationType;
@@ -65,12 +67,7 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
                   {marker?.PRICE.toLocaleString()}원
                 </TextComponent>
               </FlexView>
-              <CustomButton
-                text="0.9km"
-                iconName="navigation"
-                size="small"
-                style={{padding: 20}}
-              />
+              <CustomButton text="길찾기" iconName="navigation" size="small" />
             </FlexView>
           )}
         </FlexView>
@@ -79,7 +76,7 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
             <View style={{backgroundColor: palette.grey_7, height: 10}} />
             <PrimaryInformationComponent marker={marker} />
             <View style={{backgroundColor: palette.grey_7, height: 10}} />
-            <LocationInformationComponent />
+            <LocationInformationComponent marker={marker} />
             <FlexView
               style={{
                 position: 'absolute',
@@ -90,10 +87,10 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
               paddingHorizontal={20}>
               <Icons name="star" size={24} />
               <CustomButton
-                text="0.9km"
+                text="길찾기"
                 iconName="navigation"
                 size="small"
-                style={{padding: 20}}
+                style={{paddingHorizontal: 20, fontSize: 20}}
               />
             </FlexView>
           </>
@@ -128,24 +125,40 @@ function PrimaryInformationComponent({marker}: SelectMarkerCardType) {
           flexSet={['flex-start', 'center']}
           style={{height: 'auto', marginBottom: 20}}>
           <Icons name="local-gas-station" size={20} style={{marginRight: 40}} />
-          <TextComponent fontSize={14}>
-            경유 1L당 {marker.PRICE.toLocaleString()}원
-          </TextComponent>
+          <TextComponent fontSize={14}>경유 1L당 xxx원</TextComponent>
         </FlexView>
         <FlexView
           flexSet={['flex-start', 'center']}
           style={{height: 'auto', marginBottom: 20}}>
           <Icons name="local-gas-station" size={20} style={{marginRight: 40}} />
-          <TextComponent fontSize={14}>
-            등유 1L당 {marker.PRICE.toLocaleString()}원
-          </TextComponent>
+          <TextComponent fontSize={14}>등유 1L당 xxx원</TextComponent>
         </FlexView>
       </FlexView>
     </View>
   );
 }
 
-function LocationInformationComponent() {
+function LocationInformationComponent({marker}: SelectMarkerCardType) {
+  const mapRef = useRef<MapView | null>(null);
+
+  const getRegionForZoom = (lat: number, lon: number, zoom: number) => {
+    const distanceDelta = Math.exp(Math.log(360) - zoom * Math.LN2);
+    const {width, height} = Dimensions.get('window');
+    const aspectRatio = width / height;
+    return {
+      latitude: lat,
+      longitude: lon,
+      latitudeDelta: distanceDelta * aspectRatio,
+      longitudeDelta: distanceDelta,
+    };
+  };
+
+  useEffect(() => {
+    mapRef.current?.animateToRegion(
+      getRegionForZoom(marker.GIS_X_COOR, marker.GIS_Y_COOR, 15),
+    );
+  }, []);
+
   return (
     <View style={{padding: 20}}>
       <FlexView flexDirection="column" style={{height: 'auto'}}>
@@ -156,12 +169,27 @@ function LocationInformationComponent() {
           style={{marginBottom: 20}}>
           위치 정보
         </TextComponent>
+
         <BorderView
           height={150}
           borderRadius={4}
-          style={{backgroundColor: '#ddd', marginBottom: 20}}
-          borderColor={'#ddd'}
-        />
+          style={{marginBottom: 20}}
+          borderColor={'#ddd'}>
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            initialRegion={{
+              latitude: marker.GIS_X_COOR,
+              longitude: marker.GIS_Y_COOR,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}>
+            <CurrentLocationMarker
+              latitude={marker.GIS_X_COOR}
+              longitude={marker.GIS_Y_COOR}
+            />
+          </MapView>
+        </BorderView>
         <FlexView
           flexSet={['flex-start', 'center']}
           style={{height: 'auto', marginBottom: 20}}>
@@ -178,3 +206,9 @@ function LocationInformationComponent() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});

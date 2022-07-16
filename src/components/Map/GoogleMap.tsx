@@ -1,8 +1,8 @@
 import React, {useRef, useState, useCallback} from 'react';
 import {useQuery} from 'react-query';
 import proj4 from 'proj4';
-import {Image, ActivityIndicator} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import {ActivityIndicator} from 'react-native';
+import MapView from 'react-native-maps';
 import {useRecoilValue, useSetRecoilState, useRecoilState} from 'recoil';
 import {
   isShowBottomSheetState,
@@ -17,10 +17,10 @@ import {
   CustomClusterMapView,
   BottomSheet,
   SelectMarkerCard,
+  CurrentLocationMarker,
 } from 'components/Map';
 import {FlexView} from 'components/common';
 import {getAroundAllOilStation} from 'api';
-import images from 'assets/images';
 import {useGetCurrentPosition, useScrollBottomSheet} from 'hooks';
 
 //아래 proj4 라이브러리는 google map의 지도 위치 표기 방법은 WGS84방식, 오피넷의 위치 표기방식은 TM128방식이므로, 이를 서로 변경해주는 작업입니다.
@@ -40,7 +40,6 @@ function GoogleMap() {
   const isClickMarker = useRecoilValue(isClickMarkerState);
   const setIsShowBottomSheet = useSetRecoilState(isShowBottomSheetState);
   const [marker, setMarker] = useRecoilState(isMarkerState);
-
   const [zoom, setZoom] = useState(12);
   const mapRef = useRef<MapView>(null);
   const {latlng} = useGetCurrentPosition();
@@ -53,8 +52,7 @@ function GoogleMap() {
   const {DEFAULT_SHOW_SCREEN_HEIGHT} = useScrollBottomSheet();
   const ref = useRef<BottomSheetRefProps>(null);
 
-  const onPressMarker = useCallback(marker => {
-    setMarker(marker);
+  const onPressMarker = useCallback((marker: OilStationType) => {
     const isActive = ref?.current?.isActive();
     if (isActive) {
       setIsShowBottomSheet(true);
@@ -62,6 +60,7 @@ function GoogleMap() {
       setIsShowBottomSheet(false);
       ref?.current?.scrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
     }
+    setMarker(marker);
   }, []);
 
   const tmToWgs = proj4(WGS84, TM128, [region.longitude, region.latitude]);
@@ -73,6 +72,7 @@ function GoogleMap() {
     prodcd: 'B027',
     sort: 2,
   };
+
   const {
     data: oilStations,
     refetch,
@@ -116,13 +116,10 @@ function GoogleMap() {
           ref={mapRef}
           initialRegion={region}
           onRegionChangeComplete={onRegionChangeComplete}>
-          <Marker coordinate={latlng}>
-            <Image
-              source={images.MapMarker}
-              style={{width: 30, height: 30}}
-              resizeMode="cover"
-            />
-          </Marker>
+          <CurrentLocationMarker
+            latitude={latlng.latitude}
+            longitude={latlng.longitude}
+          />
           <CenterMarker
             isFetching={isFetching}
             center={{
@@ -133,6 +130,7 @@ function GoogleMap() {
 
           {oilStations?.map(oilStation => (
             <OilStationMarker
+              selectMarker={marker}
               marker={oilStation}
               key={oilStation.UNI_ID}
               zoom={zoom}
