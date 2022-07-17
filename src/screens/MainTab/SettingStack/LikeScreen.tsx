@@ -135,7 +135,6 @@ export default function LikeScreen({route}: {route: ParamType}) {
   const [index, setIndex] = React.useState<number>();
 
   useEffect(() => {
-    console.log(route.params?.type);
     if (route.params?.type === 'GAS_STATION') {
       setIndex(1);
     } else {
