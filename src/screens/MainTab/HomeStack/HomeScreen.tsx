@@ -55,7 +55,13 @@ export default function HomeScreen({
               ...styles.container,
               flex: 1,
               marginRight: 16,
-            }}>
+            }}
+            onPress={() =>
+              navigation.navigate('Setting', {
+                params: {type: 'GAS_STATION'},
+                screen: 'Like',
+              })
+            }>
             <Text style={styles.containerTitle}>단골 주유소</Text>
             <SVG
               name="home-oil"
@@ -68,7 +74,8 @@ export default function HomeScreen({
             style={{
               ...styles.container,
               flex: 1,
-            }}>
+            }}
+            onPress={() => navigation.navigate('Setting', {screen: 'Like'})}>
             <Text style={styles.containerTitle}>단골 주차장</Text>
             <SVG
               name="home-parking"

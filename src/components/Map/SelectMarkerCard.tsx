@@ -18,7 +18,7 @@ type SelectMarkerCardType = {
 };
 
 function SelectMarkerCard({marker}: SelectMarkerCardType) {
-  const {logo} = useGetOilStationBrandLogo(marker);
+  const {logo} = useGetOilStationBrandLogo(marker.POLL_DIV_CD);
   const isMaxHeight = useRecoilValue(isBottomSheetMaxHeightState);
   const {DEFAULT_SHOW_SCREEN_HEIGHT, SCREEN_HEIGHT} = useScrollBottomSheet();
   const height = -DEFAULT_SHOW_SCREEN_HEIGHT;

@@ -5,24 +5,26 @@ import {palette} from '@/constant';
 import {SizedView, CustomButton} from '@components/common';
 
 type ParkingLotCardProps = {
-  title: string;
-  like: boolean;
-  onPress: () => void;
+  info: ParkingLot;
+  onNavigate: (lat: number, lng: number) => void;
+  onToggle: (id: number) => void;
+  like?: boolean;
 };
 
 export default function ParkingLotCard({
   like,
-  title,
-  onPress,
+  info,
+  onNavigate,
+  onToggle,
 }: ParkingLotCardProps) {
+  const {parkingName, id, lat, lng, address, payYN} = info;
   return (
     <SizedView style={styles.container}>
       <View style={styles.info}>
-        <Text style={styles.title}>{title}</Text>
-        <View style={styles.desc}>
-          <Text style={styles.perHour}>시간당</Text>
-          <Text style={styles.price}>4,000원</Text>
-        </View>
+        <Text style={styles.title}>
+          {parkingName} {!payYN && '(무료)'}
+        </Text>
+        <Text style={styles.address}>{address}</Text>
       </View>
       <View style={styles.buttonWrapper}>
         <Pressable
@@ -31,7 +33,7 @@ export default function ParkingLotCard({
             Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
           ]}
           android_ripple={{color: palette.white}}
-          onPress={onPress}>
+          onPress={() => onToggle(id)}>
           <MaterialIcon
             name={like ? 'cards-heart' : 'cards-heart-outline'}
             color={palette.red_1}
@@ -39,7 +41,7 @@ export default function ParkingLotCard({
           />
         </Pressable>
         <CustomButton
-          onPress={() => undefined}
+          onPress={() => onNavigate(lat, lng)}
           text="경로찾기"
           size="small"
           iconName="navigation-variant-outline"
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 16,
   },
-  info: {paddingLeft: 20},
+  info: {paddingLeft: 20, flex: 1, paddingRight: 10},
   buttonWrapper: {width: 120, marginRight: 20},
   button: {
     borderRadius: 10,
@@ -76,15 +78,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  desc: {},
-  perHour: {
-    color: palette.grey_5,
-    fontSize: 14,
-    fontWeight: 'normal',
-  },
-  price: {
+  address: {
     color: palette.blue_2,
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '400',
   },
 });

@@ -1,14 +1,19 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import MyProfileScreen from './MyProfileScreen';
 import CardScreen from './CardScreen';
 import OilScreen from './OilScreen';
 import LikeScreen from './LikeScreen';
 import NavigationScreen from './NavigationScreen';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {palette} from '@/constant';
 
 const Stack = createNativeStackNavigator();
 
-function SettingStack() {
+function SettingStack({navigation}: NativeStackScreenProps<any>) {
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -19,7 +24,17 @@ function SettingStack() {
       <Stack.Screen
         name="Like"
         component={LikeScreen}
-        options={{title: '찜 목록'}}
+        options={{
+          title: '찜 목록',
+          headerLeft: props => (
+            <Icon
+              name="arrow-back-ios"
+              onPress={() => navigation.pop()}
+              size={20}
+              color={palette.grey_1}
+            />
+          ),
+        }}
       />
       <Stack.Screen
         name="Card"

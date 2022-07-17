@@ -3,9 +3,7 @@ import {Image} from 'react-native';
 import SVG from 'assets/SVG';
 import Images from 'assets/images';
 
-function useGetOilStationBrandLogo(marker: OilStationType) {
-  const brandName = marker.POLL_DIV_CD;
-
+function useGetOilStationBrandLogo(brandName: OIL_STATIONS) {
   const totalOilStationBrandList: Record<OIL_STATIONS, OIL_STATIONS> = {
     SKE: 'SKE',
     HDO: 'HDO',
