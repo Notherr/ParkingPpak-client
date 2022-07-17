@@ -11,7 +11,7 @@ type OilStationMarkerProps = {
 };
 
 function OilStationMarker({marker, onPress, zoom}: OilStationMarkerProps) {
-  const {logo} = useGetOilStationBrandLogo(marker);
+  const {logo} = useGetOilStationBrandLogo(marker.POLL_DIV_CD);
   const coordinate = {
     longitude: marker.GIS_Y_COOR,
     latitude: marker.GIS_X_COOR,
