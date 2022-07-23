@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {palette} from '@/constant';
 
 type CenterMarkerType = {
-  isFetching: boolean;
+  isFetching?: boolean;
   center: LatLng;
 };
 

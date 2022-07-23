@@ -12,3 +12,4 @@ export {default as ClusterMarker} from './ClusterMarker';
 export {default as CustomClusterMapView} from './CustomClusterMapView';
 export {default as BottomSheet} from './BottomSheet';
 export {default as SelectMarkerCard} from './SelectMarkerCard';
+export {default as CurrentLocationMarker} from './CurrentLocationMarker';
