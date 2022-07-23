@@ -30,7 +30,10 @@ export class APIService {
     return Promise.reject(err.response);
   };
 
-  public get = (url: string, config?: AxiosRequestConfig) =>
+  public get = <T>(
+    url: string,
+    config?: AxiosRequestConfig,
+  ): Promise<APIData<T>> =>
     this.instance.get(url, config).then(this.onSuccess).catch(this.onError);
 
   public post = <T>(
@@ -53,6 +56,6 @@ export class APIService {
       .then(this.onSuccess)
       .catch(this.onError);
 
-  public delete = (url: string, config?: AxiosRequestConfig) =>
+  public delete = <T>(url: string, config?: AxiosRequestConfig<T>) =>
     this.instance.delete(url, config).then(this.onSuccess).catch(this.onError);
 }

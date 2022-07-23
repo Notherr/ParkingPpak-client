@@ -16,36 +16,37 @@ declare global {
     title: T;
   };
 
-  // 데이터 타입 확인 필요
   type ParkingLot = {
-    id: number;
-    add_rates: number;
-    add_time_rates: number;
+    addRates: number;
+    addTimeRates: number;
     address: string;
-    holiday_begin: string;
-    holiday_end: string;
-    modification_date: string;
-    parking_code: number;
-    parking_name: string;
-    payyn: boolean;
-    phone_number: string;
+    holidayBegin: string;
+    holidayEnd: string;
+    id: number;
+    lat: number;
+    lng: number;
+    modificationDate: string;
+    parkingCode: number;
+    parkingName: string;
+    payYN: false;
+    phoneNumber: string;
     rates: number;
-    sync_time: string;
-    time_rates: string;
+    syncTime: string;
+    timeRates: number;
     type: string;
-    weekday_begin: string;
-    weekday_end: string;
-    weekend_begin: string;
-    weekend_end: string;
-    x_coor: number;
-    y_coor: number;
+    weekdayBegin: string;
+    weekdayEnd: string;
+    weekendBegin: string;
+    weekendEnd: string;
   };
 
-  // 추가 필요
   type GasStation = {
+    compName: OIL_STATIONS;
+    dieselPrice: number;
+    gasolinePrice: number;
     id: number;
-    compName: string;
-    xCoor: number;
-    yCoor: number;
+    lat: number;
+    lng: number;
+    name: string;
   };
 }
