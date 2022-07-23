@@ -39,7 +39,7 @@ function OilStationMarker({
     }
   }
 
-  const isSelect = marker.UNI_ID === selectMarker?.UNI_ID;
+const isSelect = useMemo(()=>marker.UNI_ID === selectMarker?.UNI_ID,[])
 
   return (
     <Marker coordinate={coordinate} onPress={() => onPress(marker)}>
