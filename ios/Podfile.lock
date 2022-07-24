@@ -1,5 +1,11 @@
 PODS:
-  - Alamofire (5.6.1)
+  - Alamofire (5.6.2)
+  - AppAuth (1.5.0):
+    - AppAuth/Core (= 1.5.0)
+    - AppAuth/ExternalUserAgent (= 1.5.0)
+  - AppAuth/Core (1.5.0)
+  - AppAuth/ExternalUserAgent (1.5.0):
+    - AppAuth/Core
   - boost (1.76.0)
   - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
@@ -97,6 +103,14 @@ PODS:
   - GoogleMaps/Base (5.1.0)
   - GoogleMaps/Maps (5.1.0):
     - GoogleMaps/Base
+  - GoogleSignIn (6.2.2):
+    - AppAuth (~> 1.5)
+    - GTMAppAuth (~> 1.3)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GTMAppAuth (1.3.0):
+    - AppAuth/Core (~> 1.4)
+    - GTMSessionFetcher/Core (~> 1.5)
+  - GTMSessionFetcher/Core (1.7.2)
   - kakao-login (3.4.3):
     - KakaoSDK (~> 2.4.0)
     - KakaoSDKAuth (~> 2.4.0)
@@ -428,6 +442,9 @@ PODS:
     - React-Core
   - RNGestureHandler (2.5.0):
     - React-Core
+  - RNGoogleSignin (8.0.0):
+    - GoogleSignIn (~> 6.2.2)
+    - React-Core
   - RNReanimated (2.9.1):
     - DoubleConversion
     - FBLazyVector
@@ -495,6 +512,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - Google-Maps-iOS-Utils
   - GoogleMaps
+  - GoogleSignIn (~> 6.2.2)
   - "kakao-login (from `../node_modules/@react-native-seoul/kakao-login`)"
   - lottie-react-native (from `../node_modules/lottie-react-native`)
   - OpenSSL-Universal (= 1.1.180)
@@ -531,6 +549,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -540,6 +559,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - AppAuth
     - CocoaAsyncSocket
     - Flipper
     - Flipper-Boost-iOSX
@@ -553,6 +573,9 @@ SPEC REPOS:
     - fmt
     - Google-Maps-iOS-Utils
     - GoogleMaps
+    - GoogleSignIn
+    - GTMAppAuth
+    - GTMSessionFetcher
     - KakaoSDK
     - KakaoSDKAuth
     - KakaoSDKCommon
@@ -644,6 +667,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNGoogleSignin:
+    :path: "../node_modules/@react-native-google-signin/google-signin"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -656,7 +681,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  Alamofire: 87bd8c952f9a4454320fce00d9cc3de57bcadaf5
+  Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
+  AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
@@ -675,6 +701,9 @@ SPEC CHECKSUMS:
   glog: 85ecdd10ee8d8ec362ef519a6a45ff9aa27b2e85
   Google-Maps-iOS-Utils: 95d5ca4d2004314eff88c1819b969db6cac37ab6
   GoogleMaps: 086ae1dab659eaa7339bdb30fc88e2f44e7c597c
+  GoogleSignIn: 3c68388ac221f379676e8f1cb115df3aaf73b93f
+  GTMAppAuth: 4d8f864896f3646f0c33baf38a28362f4c601e15
+  GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   kakao-login: f5633a612ae8af34edacf4f9d8bed87964a18117
   KakaoSDK: 1e80d6877c0eac6a310f93c73fb15ca56c05f2bd
   KakaoSDKAuth: fcba1c9ede431683f5bdd84c835a96981cb115a5
@@ -720,6 +749,7 @@ SPEC CHECKSUMS:
   ReactCommon: 650e33cde4fb7d36781cd3143f5276da0abb2f96
   RNCAsyncStorage: d81ee5c3db1060afd49ea7045ad460eff82d2b7d
   RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
+  RNGoogleSignin: b2179ba653c759b936404a7746fc5302f9de6a5a
   RNReanimated: b5b17149593e7c05e4ec5c0efea1f21e05829510
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
@@ -727,6 +757,6 @@ SPEC CHECKSUMS:
   Yoga: 90dcd029e45d8a7c1ff059e8b3c6612ff409061a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: ef810a18a4eac17f22c807b37d76f64589562eab
+PODFILE CHECKSUM: ff39a45f47cf50f454304b428a03648032ab7608
 
 COCOAPODS: 1.11.3
