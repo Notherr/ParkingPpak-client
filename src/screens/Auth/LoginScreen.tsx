@@ -8,7 +8,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import ZocialIcon from 'react-native-vector-icons/Zocial';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Formik} from 'formik';
-import {BorderedInput, CustomButton} from '@components/common';
+import {BorderedInput, CustomButton, Logo} from '@components/common';
 import * as Yup from 'yup';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import {useKakaoAuthActions, useLocalAuthActions} from 'recoil/actions';
@@ -78,7 +78,7 @@ export default function LoginScreen() {
   return (
     <View style={styles.block}>
       <View style={styles.logo}>
-        <Text>로고</Text>
+        <Logo />
       </View>
       <Formik
         initialValues={initialValues}
@@ -169,8 +169,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     height: 100,
-    backgroundColor: palette.grey_5,
-    marginBottom: 20,
+    border: 1,
   },
   login: {
     textAlign: 'center',

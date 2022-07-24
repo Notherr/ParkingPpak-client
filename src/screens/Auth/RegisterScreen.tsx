@@ -14,7 +14,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import {BorderedInput, CustomButton} from '@components/common';
+import {BorderedInput, CustomButton, Logo} from '@components/common';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 type RegisterForm = RegisterRequest & {confirmPassword: string};
@@ -68,7 +68,7 @@ export default function RegisterScreen() {
       behavior={Platform.select({ios: 'padding'})}>
       <SafeAreaView style={styles.safeView}>
         <View style={styles.logo}>
-          <Text>로고</Text>
+          <Logo />
         </View>
         <Formik
           initialValues={initialValues}
@@ -188,8 +188,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     height: 100,
-    backgroundColor: palette.grey_5,
-    marginBottom: 20,
+    border: 1,
   },
   register: {
     textAlign: 'center',
