@@ -5,4 +5,5 @@ export {default as BorderView} from './BorderView';
 export {default as FlexView} from './FlexView';
 export {default as SizedView} from './SizedView';
 export {default as TextComponent} from './TextComponent';
+export {default as Logo} from './Logo';
 export {default as GridColumn} from './GridColumn';
