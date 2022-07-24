@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {login, getProfile} from '@react-native-seoul/kakao-login';
 import {AuthStackNavigationProps} from './index';
 import {palette} from '@constant/index';
@@ -13,23 +13,25 @@ import * as Yup from 'yup';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import {useKakaoAuthActions, useLocalAuthActions} from 'recoil/actions';
 
-GoogleSignin.configure({
-  scopes: ['https://www.googleapis.com/auth/userinfo.email'], // what API you want to access on behalf of the user, default is email and profile
-  webClientId:
-    '452065527838-h0oastn5pmuhtn32o72j3vjihjjn8qvh.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-  offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-  // hostedDomain: '', // specifies a hosted domain restriction
-  // forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-  // accountName: '', // [Android] specifies an account name on the device that should be used
-  iosClientId:
-    '452065527838-h0oastn5pmuhtn32o72j3vjihjjn8qvh.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-  // googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
-  // openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
-  profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
-});
-
 export default function LoginScreen() {
   const navigation = useNavigation<AuthStackNavigationProps>();
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      scopes: ['https://www.googleapis.com/auth/userinfo.email'], // what API you want to access on behalf of the user, default is email and profile
+      webClientId:
+        '452065527838-h0oastn5pmuhtn32o72j3vjihjjn8qvh.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+      offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+      // hostedDomain: '', // specifies a hosted domain restriction
+      // forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+      // accountName: '', // [Android] specifies an account name on the device that should be used
+      iosClientId:
+        '452065527838-h0oastn5pmuhtn32o72j3vjihjjn8qvh.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+      // googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
+      // openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
+      profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
+    });
+  }, []);
 
   const [emailError, setEmailError] = useState<string>();
   const [passwordError, setPasswordError] = useState<string>();
@@ -53,17 +55,13 @@ export default function LoginScreen() {
   const signInWithKakao = async () => {
     await login();
     await getProfile().then(res => console.log(res));
-    // {"ageRange": null, "ageRangeNeedsAgreement": null, "birthday": null, "birthdayNeedsAgreement": null, "birthdayType": null, "birthyear": null, "birthyearNeedsAgreement": null, "email": "tsc03018@naver.com", "emailNeedsAgreement": false, "gender": null, "genderNeedsAgreement": false, "id": "2333953287", "isEmailValid": true, "isEmailVerified": true, "isKorean": null, "isKoreanNeedsAgreement": null, "nickname": "도혜원", "phoneNumber": null, "phoneNumberNeedsAgreement": null, "profileImageUrl": null, "profileNeedsAgreement": false, "thumbnailImageUrl": null}
-
-    // if (user) {
-    //   loginKakao(user).then(user => console.log(user));
-    // }
+    // {"ageRange": null, "ageRangeNeedsAgreement": null, "birthday": null, "birthdayNeedsAgreement": null, "birthdayType": null, "birthyear": null, "birthyearNeedsAgreement": null, "email": string, "emailNeedsAgreement": false, "gender": null, string: false, "id": string, "isEmailValid": true, "isEmailVerified": true, "isKorean": null, "isKoreanNeedsAgreement": null, "nickname": "도혜원", "phoneNumber": null, "phoneNumberNeedsAgreement": null, "profileImageUrl": null, "profileNeedsAgreement": false, "thumbnailImageUrl": null}
   };
 
   const signInWithGoogle = async () => {
     await GoogleSignin.hasPlayServices();
     await GoogleSignin.signIn().then(({user}) => console.log(user));
-    // {"email": "tsc03018@gmail.com", "familyName": "do", "givenName": "hye won", "id": "103471963232679908403", "name": "hye won do", "photo": "https://lh3.googleusercontent.com/a/AItbvmkmMilD1NmH7IMcDqoopMd1qWIxIm_Kj5vFVM92=s120"}
+    // {"email": string, "familyName": string, "givenName": string, "id": string, "name": "hye won do", "photo": string}
   };
 
   const onLocalLogin = async (userInfo: LoginRequest) => {
