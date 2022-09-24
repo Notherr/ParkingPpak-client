@@ -6,6 +6,7 @@ import {
   View,
   Text,
   ActivityIndicator,
+  FlatList,
 } from 'react-native';
 import {palette} from '@/constant';
 import {useEffect} from 'react';
@@ -14,7 +15,6 @@ import useLike from '@/recoil/actions/useLike';
 import ParkingLotCard from '@/components/Setting/ParkingLotCard';
 import GasStationCard from '@/components/Setting/GasStationCard';
 import {TabView, TabBar, SceneRendererProps} from 'react-native-tab-view';
-import {FlatList} from 'react-native-gesture-handler';
 
 type RouteType = {
   key: ContentType;

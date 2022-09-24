@@ -121,7 +121,7 @@ function CustomClusterMapView(
   ]);
 
   const _onRegionChangeComplete = (newRegion: Region) => {
-    setIsShowBottomSheet(true);
+    setIsShowBottomSheet(false);
     if (superCluster && currentRegion) {
       const bBox = calculateBBox(currentRegion);
       const zoom = returnMapZoom(newRegion, bBox, minZoom);

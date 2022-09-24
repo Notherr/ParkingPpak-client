@@ -74,15 +74,15 @@ export default function TypeSwtich() {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
+    padding: 20,
+    zIndex: 3,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative',
     width: 150,
     backgroundColor: palette.blue_2,
     top: 130,
-    padding: 20,
-    zIndex: 3,
     borderRadius: 30,
     alignSelf: 'center',
   },
