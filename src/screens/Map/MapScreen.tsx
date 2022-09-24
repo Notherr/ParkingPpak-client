@@ -11,7 +11,7 @@ function MapScreen({navigation, route}: NativeStackScreenProps<any>) {
   return (
     <View style={styles.box}>
       <GoogleMap />
-      {isClickMarker && <SearchBox navigation={navigation} route={route} />}
+      <SearchBox navigation={navigation} route={route} />
       <Swtich />
       {/* <ListButton navigation={navigation} route={route} /> */}
     </View>

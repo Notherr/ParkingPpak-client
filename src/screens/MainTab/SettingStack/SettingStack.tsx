@@ -29,7 +29,7 @@ function SettingStack({navigation}: NativeStackScreenProps<any>) {
           headerLeft: props => (
             <Icon
               name="arrow-back-ios"
-              onPress={() => navigation.pop()}
+              onPress={() => navigation.navigate('MyProfile')}
               size={20}
               color={palette.grey_1}
             />

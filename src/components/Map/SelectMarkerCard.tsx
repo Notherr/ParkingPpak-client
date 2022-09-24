@@ -1,10 +1,10 @@
 import React, {useRef, useEffect} from 'react';
-import MapView, {Region} from 'react-native-maps';
+import MapView from 'react-native-maps';
 import {useRecoilValue} from 'recoil';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import {View, StyleSheet, Dimensions} from 'react-native';
 import {palette} from '@/constant';
-import {useScrollBottomSheet, useGetOilStationBrandLogo} from 'hooks';
+import {useGetOilStationBrandLogo} from 'hooks';
 import {isBottomSheetMaxHeightState} from '@/recoil/atoms';
 import {
   SizedView,
@@ -22,8 +22,6 @@ type SelectMarkerCardType = {
 function SelectMarkerCard({marker}: SelectMarkerCardType) {
   const {logo} = useGetOilStationBrandLogo(marker.POLL_DIV_CD);
   const isMaxHeight = useRecoilValue(isBottomSheetMaxHeightState);
-  const {DEFAULT_SHOW_SCREEN_HEIGHT, SCREEN_HEIGHT} = useScrollBottomSheet();
-  const height = -DEFAULT_SHOW_SCREEN_HEIGHT;
 
   return (
     <View
@@ -34,7 +32,8 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
       }}>
       <SizedView
         marginHorizontal={0}
-        height={isMaxHeight ? SCREEN_HEIGHT : height - 80}>
+        // height={isMaxHeight ? SCREEN_HEIGHT : height - 80}
+      >
         <FlexView
           flexDirection="column"
           style={{height: 'auto'}}
@@ -74,9 +73,9 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
         {isMaxHeight && (
           <>
             <View style={{backgroundColor: palette.grey_7, height: 10}} />
-            <PrimaryInformationComponent marker={marker} />
+            {/* <PrimaryInformationComponent marker={marker} /> */}
             <View style={{backgroundColor: palette.grey_7, height: 10}} />
-            <LocationInformationComponent marker={marker} />
+            {/* <LocationInformationComponent marker={marker} /> */}
             <FlexView
               style={{
                 position: 'absolute',
@@ -169,7 +168,6 @@ function LocationInformationComponent({marker}: SelectMarkerCardType) {
           style={{marginBottom: 20}}>
           위치 정보
         </TextComponent>
-
         <BorderView
           height={150}
           borderRadius={4}

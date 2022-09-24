@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {palette} from 'constant';
 import {Marker} from 'react-native-maps';
 import {useGetOilStationBrandLogo} from 'hooks';
@@ -17,7 +17,7 @@ function OilStationMarker({
   zoom,
   selectMarker,
 }: OilStationMarkerProps) {
-  const {logo} = useGetOilStationBrandLogo(marker);
+  const {logo} = useGetOilStationBrandLogo(marker.POLL_DIV_CD);
 
   const coordinate = {
     longitude: marker.GIS_Y_COOR,
@@ -39,7 +39,7 @@ function OilStationMarker({
     }
   }
 
-const isSelect = useMemo(()=>marker.UNI_ID === selectMarker?.UNI_ID,[])
+  const isSelect = useMemo(() => marker.UNI_ID === selectMarker?.UNI_ID, []);
 
   return (
     <Marker coordinate={coordinate} onPress={() => onPress(marker)}>

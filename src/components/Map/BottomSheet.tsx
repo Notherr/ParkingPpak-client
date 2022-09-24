@@ -1,14 +1,13 @@
-import React, {
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-  ForwardedRef,
-} from 'react';
+import React, {ReactNode} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
-import {GestureDetector, Gesture} from 'react-native-gesture-handler';
+import {
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
 import {useScrollBottomSheet} from 'hooks';
 import Animated, {
   useAnimatedStyle,
+  useAnimatedGestureHandler,
   interpolate,
   Extrapolate,
 } from 'react-native-reanimated';
@@ -17,40 +16,47 @@ import {
   isShowBottomSheetState,
   isMarkerState,
   isBottomSheetMaxHeightState,
+  isBottomSheetExpandedState,
 } from '@/recoil/atoms';
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
-function BottomSheet(
-  {children}: BottomSheetProps,
-  ref: ForwardedRef<BottomSheetRefProps>,
-) {
-  const {
-    scrollTo,
-    isActive,
-    translateY,
-    defaultContext,
-    DEFAULT_SHOW_SCREEN_HEIGHT,
-    MAX_TRANSLATE_Y,
-  } = useScrollBottomSheet();
+export default function BottomSheet({
+  showBottomSheet,
+  children,
+}: {
+  showBottomSheet: boolean;
+  children: ReactNode;
+}) {
+  const {scrollTo, translateY, DEFAULT_SHOW_SCREEN_HEIGHT, MAX_TRANSLATE_Y} =
+    useScrollBottomSheet(showBottomSheet);
+
   const setIsShowBottomSheet = useSetRecoilState(isShowBottomSheetState);
   const setIsMarker = useSetRecoilState(isMarkerState);
   const [isMaxHeight, setIsMaxHeight] = useRecoilState(
     isBottomSheetMaxHeightState,
   );
 
-  useImperativeHandle(ref, () => ({scrollTo, isActive}), [scrollTo, isActive]);
+  const [isExpanded, setIsExpanded] = useRecoilState(
+    isBottomSheetExpandedState,
+  );
 
-  const gesture = Gesture.Pan()
-    .onStart(() => {
-      defaultContext.value = {y: translateY.value};
-    })
-    .onUpdate(event => {
-      translateY.value = event.translationY + defaultContext.value.y;
-      translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
-    })
-    .onEnd(() => {
+  const gestureHandler = useAnimatedGestureHandler<
+    PanGestureHandlerGestureEvent,
+    {translateY: number}
+  >({
+    onStart: (_, ctx) => {
+      ctx.translateY = translateY.value;
+    },
+    onActive: (event, ctx) => {
+      translateY.value = Math.max(
+        event.translationY + ctx.translateY,
+        MAX_TRANSLATE_Y,
+      );
+    },
+    onEnd: () => {
       if (translateY.value > MAX_TRANSLATE_Y + 50 && isMaxHeight) {
+        console.log(1);
         scrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
         setIsMaxHeight(false);
       } else if (translateY.value < DEFAULT_SHOW_SCREEN_HEIGHT) {
@@ -60,11 +66,14 @@ function BottomSheet(
         translateY.value > DEFAULT_SHOW_SCREEN_HEIGHT &&
         !isMaxHeight
       ) {
-        setIsShowBottomSheet(true);
+        console.log(3);
+
+        setIsShowBottomSheet(false);
         setIsMarker(null);
         scrollTo(0);
       }
-    });
+    },
+  });
 
   const rBottomSheetStyle = useAnimatedStyle(() => {
     const borderRadius = interpolate(
@@ -79,18 +88,13 @@ function BottomSheet(
     };
   });
 
-  useEffect(() => {
-    scrollTo(0);
-  }, []);
-
   return (
-    <GestureDetector gesture={gesture}>
+    <PanGestureHandler onGestureEvent={gestureHandler}>
       <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]}>
         <View style={styles.line} />
-
         {children}
       </Animated.View>
-    </GestureDetector>
+    </PanGestureHandler>
   );
 }
 
@@ -100,6 +104,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#fff',
     position: 'absolute',
+    zIndex: 5,
     top: SCREEN_HEIGHT,
     borderRadius: 25,
   },
@@ -114,5 +119,3 @@ const styles = StyleSheet.create({
 });
 
 BottomSheet.displayName = 'BottomSheet';
-
-export default forwardRef(BottomSheet);

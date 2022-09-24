@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react';
+import React from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {palette} from '@/constant';
@@ -6,7 +6,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  Animated,
+  View,
   ActivityIndicator,
 } from 'react-native';
 
@@ -25,28 +25,11 @@ export default function SearchButton({
   isFetching,
   onPress,
 }: SearchButtonType) {
-  const width = useRef(new Animated.Value(150)).current;
   const {bottom: marginBottom} = useSafeAreaInsets();
   const bottom = marginBottom;
 
-  useEffect(() => {
-    if (isFetching) {
-      Animated.timing(width, {
-        useNativeDriver: false,
-        toValue: 50,
-        duration: 100,
-      }).start();
-    } else {
-      Animated.timing(width, {
-        useNativeDriver: false,
-        toValue: 150,
-        duration: 100,
-      }).start();
-    }
-  }, [isFetching]);
-
   return (
-    <Animated.View style={[styles.wrapper, {bottom: bottom + 20, width}]}>
+    <View style={[styles.wrapper, {bottom: bottom + 20}]}>
       {!isFetching ? (
         <Pressable onPress={onPress} style={styles.button}>
           <Icon name={icon} size={size} color={palette.white} />
@@ -55,7 +38,7 @@ export default function SearchButton({
       ) : (
         <ActivityIndicator color={palette.white} />
       )}
-    </Animated.View>
+    </View>
   );
 }
 
@@ -70,6 +53,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 1,
     },
+    width: 150,
     shadowOpacity: 0.8,
     alignSelf: 'center',
     zIndex: 3,
