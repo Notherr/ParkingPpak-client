@@ -36,11 +36,6 @@ export default function BottomSheet({
   const [isMaxHeight, setIsMaxHeight] = useRecoilState(
     isBottomSheetMaxHeightState,
   );
-
-  const [isExpanded, setIsExpanded] = useRecoilState(
-    isBottomSheetExpandedState,
-  );
-
   const gestureHandler = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     {translateY: number}

@@ -10,10 +10,10 @@
 
 import React from 'react';
 import {QueryClientProvider, QueryClient} from 'react-query';
-import {RecoilRoot} from 'recoil';
-import {NavigationContainer} from '@react-navigation/native';
-import RootStack from './src/screens/RootStack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {NavigationContainer} from '@react-navigation/native';
+import {RecoilRoot} from 'recoil';
+import RootStack from './src/screens/RootStack';
 
 const client = new QueryClient();
 
