@@ -45,13 +45,19 @@ declare global {
     | 'RTO';
 
   type OilStationType = {
-    UNI_ID: string;
-    POLL_DIV_CD: OIL_STATIONS;
-    OS_NM: string;
-    PRICE: number;
-    DISTANCE: number;
-    GIS_X_COOR: number;
-    GIS_Y_COOR: number;
+    id: number;
+    compName: 'GSC';
+    name: string;
+    uniqueId: string;
+    address: string;
+    lon: number;
+    lat: number;
+    gasolinePrice: number;
+    dieselPrice: number;
+    carWash: boolean;
+    cvsExist: boolean;
+    tel: string;
+    distance: number;
   };
 
   type AroundAllOilStationParamsType = {

@@ -17,11 +17,11 @@ function OilStationMarker({
   zoom,
   selectMarker,
 }: OilStationMarkerProps) {
-  const {logo} = useGetOilStationBrandLogo(marker.POLL_DIV_CD);
+  const {logo} = useGetOilStationBrandLogo(marker.compName);
 
   const coordinate = {
-    longitude: marker.GIS_Y_COOR,
-    latitude: marker.GIS_X_COOR,
+    longitude: marker.lon,
+    latitude: marker.lat,
   };
 
   function getMarkerStyleChangesLevel(zoom: number) {
@@ -39,8 +39,9 @@ function OilStationMarker({
     }
   }
 
-  const isSelect = useMemo(() => marker.UNI_ID === selectMarker?.UNI_ID, []);
+  const isSelect = useMemo(() => marker.id === selectMarker?.id, []);
 
+  console.log(marker, zoom);
   return (
     <Marker coordinate={coordinate} onPress={() => onPress(marker)}>
       <BorderView
@@ -71,7 +72,7 @@ function OilStationMarker({
               fontSize={16}
               fontWeight={'bold'}
               color={isSelect ? '#fff' : '#000'}>
-              {marker.PRICE.toLocaleString()}
+              {marker.gasolinePrice.toLocaleString()}
             </TextComponent>
           )}
         </FlexView>

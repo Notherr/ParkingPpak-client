@@ -25,7 +25,7 @@ function useGetCurrentPosition() {
     }
   }, [latlng]);
 
-  return {latlng};
+  return latlng;
 }
 
 export default useGetCurrentPosition;
