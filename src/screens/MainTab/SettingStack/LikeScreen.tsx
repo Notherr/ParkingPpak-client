@@ -147,27 +147,25 @@ export default function LikeScreen({route}: {route: ParamType}) {
   }
 
   return (
-    <>
-      <TabView
-        navigationState={{index, routes}}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{width: layout.width}}
-        renderTabBar={props => (
-          <TabBar
-            {...props}
-            indicatorStyle={{backgroundColor: palette.blue_1}}
-            style={{
-              backgroundColor: palette.white,
-              shadowOffset: {height: 0, width: 0},
-              shadowColor: 'transparent',
-            }}
-            labelStyle={{color: palette.blue_1, fontWeight: 'bold'}}
-            pressOpacity={0.7}
-          />
-        )}
-      />
-    </>
+    <TabView
+      navigationState={{index, routes}}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{width: layout.width}}
+      renderTabBar={props => (
+        <TabBar
+          {...props}
+          indicatorStyle={{backgroundColor: palette.blue_1}}
+          style={{
+            backgroundColor: palette.white,
+            shadowOffset: {height: 0, width: 0},
+            shadowColor: 'transparent',
+          }}
+          labelStyle={{color: palette.blue_1, fontWeight: 'bold'}}
+          pressOpacity={0.7}
+        />
+      )}
+    />
   );
 }
 

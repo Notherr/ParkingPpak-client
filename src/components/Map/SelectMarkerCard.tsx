@@ -20,7 +20,7 @@ type SelectMarkerCardType = {
 };
 
 function SelectMarkerCard({marker}: SelectMarkerCardType) {
-  const {logo} = useGetOilStationBrandLogo(marker.POLL_DIV_CD);
+  const {logo} = useGetOilStationBrandLogo(marker.compName);
   const isMaxHeight = useRecoilValue(isBottomSheetMaxHeightState);
 
   return (
@@ -49,7 +49,7 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
               style={{width: 'auto', height: 'auto'}}>
               {logo}
               <TextComponent fontSize={20} style={{paddingHorizontal: 10}}>
-                {marker?.OS_NM}
+                {marker?.compName}
               </TextComponent>
             </FlexView>
             {!isMaxHeight && <Icons name="star" size={24} />}
@@ -63,7 +63,7 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
                   휘발유
                 </TextComponent>
                 <TextComponent fontSize={24}>
-                  {marker?.PRICE.toLocaleString()}원
+                  {marker?.gasolinePrice.toLocaleString()}원
                 </TextComponent>
               </FlexView>
               <CustomButton text="길찾기" iconName="navigation" size="small" />
@@ -117,7 +117,7 @@ function PrimaryInformationComponent({marker}: SelectMarkerCardType) {
           style={{height: 'auto', marginBottom: 20}}>
           <Icons name="local-gas-station" size={20} style={{marginRight: 40}} />
           <TextComponent fontSize={14}>
-            휘발유 1L당 {marker.PRICE.toLocaleString()}원
+            휘발유 1L당 {marker.gasolinePrice.toLocaleString()}원
           </TextComponent>
         </FlexView>
         <FlexView
@@ -154,7 +154,7 @@ function LocationInformationComponent({marker}: SelectMarkerCardType) {
 
   useEffect(() => {
     mapRef.current?.animateToRegion(
-      getRegionForZoom(marker.GIS_X_COOR, marker.GIS_Y_COOR, 15),
+      getRegionForZoom(marker.lat, marker.lon, 15),
     );
   }, []);
 
@@ -177,14 +177,14 @@ function LocationInformationComponent({marker}: SelectMarkerCardType) {
             ref={mapRef}
             style={styles.map}
             initialRegion={{
-              latitude: marker.GIS_X_COOR,
-              longitude: marker.GIS_Y_COOR,
+              latitude: marker.lat,
+              longitude: marker.lon,
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}>
             <CurrentLocationMarker
-              latitude={marker.GIS_X_COOR}
-              longitude={marker.GIS_Y_COOR}
+              latitude={marker.lat}
+              longitude={marker.lon}
             />
           </MapView>
         </BorderView>

@@ -7,8 +7,8 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import {View, Pressable, StyleSheet, Platform} from 'react-native';
 
 function SearchBox({navigation}: NativeStackScreenProps<any>) {
-  const {top: marginHeight} = useSafeAreaInsets();
-  const top = marginHeight;
+  const {top} = useSafeAreaInsets();
+
   const goToBackScreen = () => navigation.pop();
 
   return (

@@ -6,6 +6,7 @@ import {
 import ExploreScreen from './ExploreScreen';
 import MapScreen from './MapScreen';
 import ListScreen from './ListScreen';
+import DetailScreen from './DetailScreen';
 
 export type MapStackNavigationProps = NativeStackNavigationProp<MapStackParams>;
 
@@ -18,6 +19,7 @@ export default function MapStack() {
       initialRouteName="MapPage">
       <Stack.Screen name="MapPage" component={MapScreen} />
       <Stack.Screen name="ListPage" component={ListScreen} />
+      <Stack.Screen name="DetailPage" component={DetailScreen} />
     </Stack.Navigator>
   );
 }

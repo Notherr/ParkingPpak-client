@@ -6,6 +6,8 @@ import {
   PressableProps,
   Text,
   Platform,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -26,7 +28,7 @@ export default function CustomButton({
   color = 'primary',
   size = 'medium',
   iconName,
-  style,
+  style = {},
   ...rest
 }: CustomButtonProps) {
   return (
@@ -35,7 +37,7 @@ export default function CustomButton({
         styles.button,
         buttonStyles(size, color, !!disabled).button,
         Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
-        {style},
+        style as StyleProp<ViewStyle>,
       ]}
       disabled={disabled}
       {...rest}>

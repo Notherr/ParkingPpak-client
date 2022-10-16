@@ -1,6 +1,5 @@
-import React, {useRef, useState, useCallback} from 'react';
+import React, {useRef, useState, useCallback, useEffect} from 'react';
 import {useQuery} from 'react-query';
-import proj4 from 'proj4';
 import {ActivityIndicator} from 'react-native';
 import MapView from 'react-native-maps';
 import {useRecoilValue, useRecoilState} from 'recoil';
@@ -16,22 +15,12 @@ import {
   MyLocationButton,
   CustomClusterMapView,
   BottomSheet,
-  SelectMarkerCard,
   CurrentLocationMarker,
+  SelectMarkerCard,
 } from 'components/Map';
 import {FlexView} from 'components/common';
-import {getAroundAllOilStation} from 'api';
+import {useMap} from 'recoil/actions';
 import {useGetCurrentPosition} from 'hooks';
-
-//아래 proj4 라이브러리는 google map의 지도 위치 표기 방법은 WGS84방식, 오피넷의 위치 표기방식은 TM128방식이므로, 이를 서로 변경해주는 작업입니다.
-const WGS84 = 'WGS84';
-const TM128 = 'TM128';
-
-proj4.defs('WGS84', '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs');
-proj4.defs(
-  'TM128',
-  '+proj=tmerc +lat_0=38 +lon_0=128 +k=0.9999 +x_0=400000 +y_0=600000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43',
-);
 
 const latitudeDelta = 0.04;
 const longitudeDelta = 0.04;
@@ -45,7 +34,10 @@ function GoogleMap() {
   const [marker, setMarker] = useRecoilState(isMarkerState);
   const [zoom, setZoom] = useState(12);
   const mapRef = useRef<MapView>(null);
-  const {latlng} = useGetCurrentPosition();
+  const {latitude, longitude} = useGetCurrentPosition();
+
+  const {getMapList} = useMap();
+
   const [region, setRegion] = useState<Region>({
     latitude: 37.564362,
     longitude: 126.977011,
@@ -59,16 +51,6 @@ function GoogleMap() {
     setMarker(marker);
   }, []);
 
-  const tmToWgs = proj4(WGS84, TM128, [region.longitude, region.latitude]);
-
-  const aroundAllParams = {
-    x: tmToWgs[0],
-    y: tmToWgs[1],
-    radius: 5000,
-    prodcd: 'B027',
-    sort: 2,
-  };
-
   // 오일 스테이션 정보를 받아옴
   // 아마 공공api를 쓰는듯
   const {
@@ -76,14 +58,10 @@ function GoogleMap() {
     refetch,
     isFetching,
   } = useQuery(['oilStation'], async () => {
-    const response = await getAroundAllOilStation(aroundAllParams);
-    return response.map((oilStation: OilStationType) => {
-      const wgsToTm = proj4(TM128, WGS84, [
-        oilStation.GIS_X_COOR,
-        oilStation.GIS_Y_COOR,
-      ]);
-      (oilStation.GIS_X_COOR = wgsToTm[1]),
-        (oilStation.GIS_Y_COOR = wgsToTm[0]);
+    const response = await getMapList(
+      `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}`,
+    );
+    return response.data.map((oilStation: OilStationType) => {
       return oilStation;
     });
   });
@@ -98,7 +76,7 @@ function GoogleMap() {
   const onResearchOilStation = () => refetch();
 
   const goMyLocation = () => {
-    const region = {...latlng, latitudeDelta, longitudeDelta};
+    const region = {latitude, longitude, latitudeDelta, longitudeDelta};
     mapRef.current?.animateToRegion(region);
   };
 
@@ -113,10 +91,7 @@ function GoogleMap() {
           ref={mapRef}
           initialRegion={region}
           onRegionChangeComplete={onRegionChangeComplete}>
-          <CurrentLocationMarker
-            latitude={latlng.latitude}
-            longitude={latlng.longitude}
-          />
+          <CurrentLocationMarker latitude={latitude} longitude={longitude} />
           <CenterMarker
             isFetching={isFetching}
             center={{
@@ -129,7 +104,7 @@ function GoogleMap() {
             <OilStationMarker
               selectMarker={marker}
               marker={oilStation}
-              key={oilStation.UNI_ID}
+              key={oilStation.id}
               zoom={zoom}
               onPress={onPressMarker}
             />
@@ -146,7 +121,7 @@ function GoogleMap() {
       )}
       <MyLocationButton onPress={goMyLocation} />
       <BottomSheet showBottomSheet={!!marker}>
-        {/* {marker && <SelectMarkerCard marker={marker} />} */}
+        {marker && <SelectMarkerCard marker={marker} />}
       </BottomSheet>
     </>
   );

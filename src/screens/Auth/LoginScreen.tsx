@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {login, getProfile} from '@react-native-seoul/kakao-login';
+// import {login, getProfile} from '@react-native-seoul/kakao-login';
 import {AuthStackNavigationProps} from './index';
 import {palette} from '@constant/index';
 import {useNavigation} from '@react-navigation/native';
@@ -53,8 +53,8 @@ export default function LoginScreen() {
   };
 
   const signInWithKakao = async () => {
-    await login();
-    await getProfile().then(res => console.log(res));
+    // await login();
+    // await getProfile().then(res => console.log(res));
     // {"ageRange": null, "ageRangeNeedsAgreement": null, "birthday": null, "birthdayNeedsAgreement": null, "birthdayType": null, "birthyear": null, "birthyearNeedsAgreement": null, "email": string, "emailNeedsAgreement": false, "gender": null, string: false, "id": string, "isEmailValid": true, "isEmailVerified": true, "isKorean": null, "isKoreanNeedsAgreement": null, "nickname": "도혜원", "phoneNumber": null, "phoneNumberNeedsAgreement": null, "profileImageUrl": null, "profileNeedsAgreement": false, "thumbnailImageUrl": null}
   };
 
