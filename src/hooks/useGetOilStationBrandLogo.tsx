@@ -3,8 +3,8 @@ import {Image} from 'react-native';
 import SVG from 'assets/SVG';
 import Images from 'assets/images';
 
-function useGetOilStationBrandLogo(brandName: OIL_STATIONS) {
-  const totalOilStationBrandList: Record<OIL_STATIONS, OIL_STATIONS> = {
+function useGetOilStationBrandLogo(brandName: GasStationType) {
+  const totalOilStationBrandList: Record<GasStationType, GasStationType> = {
     SKE: 'SKE',
     HDO: 'HDO',
     SOL: 'SOL',
@@ -18,7 +18,7 @@ function useGetOilStationBrandLogo(brandName: OIL_STATIONS) {
 
   const brand = totalOilStationBrandList[brandName];
 
-  const getBrandLogo = (brand: OIL_STATIONS) => {
+  const getBrandLogo = (brand: GasStationType) => {
     if (brand === 'SKE' || brand === 'SOL') {
       return (
         <SVG

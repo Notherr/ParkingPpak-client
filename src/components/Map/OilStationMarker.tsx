@@ -5,9 +5,9 @@ import {useGetOilStationBrandLogo} from 'hooks';
 import {FlexView, BorderView, TextComponent} from 'components/common';
 
 type OilStationMarkerProps = {
-  marker: OilStationType;
-  selectMarker: OilStationType | null;
-  onPress: (marker: OilStationType) => void;
+  marker: GasStation;
+  selectMarker: GasStation | null;
+  onPress: (marker: GasStation) => void;
   zoom: number;
 };
 

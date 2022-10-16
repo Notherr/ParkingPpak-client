@@ -19,7 +19,7 @@ import {
   SelectMarkerCard,
 } from 'components/Map';
 import {FlexView} from 'components/common';
-import {useMap} from 'recoil/actions';
+import {useGasStation} from 'recoil/actions';
 import {useGetCurrentPosition} from 'hooks';
 
 const latitudeDelta = 0.04;
@@ -36,7 +36,7 @@ function GoogleMap() {
   const mapRef = useRef<MapView>(null);
   const {latitude, longitude} = useGetCurrentPosition();
 
-  const {getMapList} = useMap();
+  const {getGasStationList} = useGasStation();
 
   const [region, setRegion] = useState<Region>({
     latitude: 37.564362,
@@ -46,7 +46,7 @@ function GoogleMap() {
   });
 
   // 마커 클릭시 bottom sheet가 올라옴
-  const onPressMarker = useCallback((marker: OilStationType) => {
+  const onPressMarker = useCallback((marker: GasStation) => {
     setIsShowBottomSheet(true);
     setMarker(marker);
   }, []);
@@ -58,10 +58,10 @@ function GoogleMap() {
     refetch,
     isFetching,
   } = useQuery(['oilStation'], async () => {
-    const response = await getMapList(
+    const response = await getGasStationList(
       `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}`,
     );
-    return response.data.map((oilStation: OilStationType) => {
+    return response.data.map((oilStation: GasStation) => {
       return oilStation;
     });
   });
