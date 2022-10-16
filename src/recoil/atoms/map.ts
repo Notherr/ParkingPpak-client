@@ -13,7 +13,7 @@ export const isBottomSheetExpandedState = atom<boolean>({
 });
 
 // marker의 정보를 담고있음
-export const isMarkerState = atom<OilStationType | null>({
+export const isMarkerState = atom<GasStation | null>({
   key: 'map/isMarkerState',
   default: null,
 });

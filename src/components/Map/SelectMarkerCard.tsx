@@ -16,7 +16,7 @@ import {
 import {CurrentLocationMarker} from 'components/Map';
 
 type SelectMarkerCardType = {
-  marker: OilStationType;
+  marker: GasStation;
 };
 
 function SelectMarkerCard({marker}: SelectMarkerCardType) {

@@ -32,33 +32,6 @@ declare global {
     categories: any[];
     region: Region;
   };
-  type OIL_STATIONS =
-    | 'SKE'
-    | 'GSC'
-    | 'HDO'
-    | 'SOL'
-    | 'FRUGAL'
-    | 'RTX'
-    | 'NHO'
-    | 'RTO'
-    | 'ETC'
-    | 'RTO';
-
-  type OilStationType = {
-    id: number;
-    compName: 'GSC';
-    name: string;
-    uniqueId: string;
-    address: string;
-    lon: number;
-    lat: number;
-    gasolinePrice: number;
-    dieselPrice: number;
-    carWash: boolean;
-    cvsExist: boolean;
-    tel: string;
-    distance: number;
-  };
 
   type AroundAllOilStationParamsType = {
     x: number;

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useGasStation} from 'recoil/actions';
 import {palette} from '@/constant';
 import {TabView, TabBar, SceneRendererProps} from 'react-native-tab-view';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
@@ -27,6 +28,7 @@ type RouteType = {
 const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [parkingLotList, setParkingLotList] = useState<ParkingLot[]>([]);
   const {getMyParkingLotList, removeLike, addLike} = useLike();
+
   useEffect(() => {
     getMyParkingLotList().then(res => {
       if (res.data) {
@@ -68,10 +70,14 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
 
 const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [gasStationList, setGasStationList] = useState<GasStation[]>([]);
-  const {getMyGasStationList, removeLike} = useLike();
+  const {removeLike} = useLike();
+
+  const {getGasStationList} = useGasStation();
 
   useEffect(() => {
-    getMyGasStationList().then(res => {
+    getGasStationList(
+      `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}`,
+    ).then(res => {
       if (res.data) {
         setGasStationList(res.data);
       }

@@ -5,9 +5,8 @@ import {palette} from '@/constant';
 import {Pressable, StyleSheet} from 'react-native';
 
 function MapTypeConverter({navigation, route}: NativeStackScreenProps<any>) {
-  console.log(route);
   const onChangeType = () => {
-    navigation.navigate('ListPage');
+    navigation.replace('ListPage');
   };
 
   return (
