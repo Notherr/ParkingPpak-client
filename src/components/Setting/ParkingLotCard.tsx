@@ -2,10 +2,11 @@ import React from 'react';
 import {Pressable, StyleSheet, Text, Platform, View} from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {palette} from '@/constant';
-import {SizedView, CustomButton} from '@components/common';
+import {CustomButton} from '@components/common';
 
 type ParkingLotCardProps = {
   info: ParkingLot;
+  onClickItem: (id: number) => void;
   onNavigate: (lat: number, lng: number) => void;
   onToggle: (id: number) => void;
   like?: boolean;
@@ -14,13 +15,14 @@ type ParkingLotCardProps = {
 export default function ParkingLotCard({
   like,
   info,
+  onClickItem,
   onNavigate,
   onToggle,
 }: ParkingLotCardProps) {
   const {parkingName, id, lat, lon, address, payYN} = info;
-  console.log(info);
+
   return (
-    <SizedView style={styles.container}>
+    <Pressable style={styles.press} onPress={() => onClickItem(id)}>
       <View style={styles.info}>
         <Text style={styles.title}>
           {parkingName} {!payYN && '(무료)'}
@@ -48,12 +50,12 @@ export default function ParkingLotCard({
           iconName="navigation-variant-outline"
         />
       </View>
-    </SizedView>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  press: {
     flex: 1,
     display: 'flex',
     justifyContent: 'space-between',
