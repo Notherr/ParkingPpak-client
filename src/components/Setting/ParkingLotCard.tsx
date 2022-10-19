@@ -17,7 +17,8 @@ export default function ParkingLotCard({
   onNavigate,
   onToggle,
 }: ParkingLotCardProps) {
-  const {parkingName, id, lat, lng, address, payYN} = info;
+  const {parkingName, id, lat, lon, address, payYN} = info;
+  console.log(info);
   return (
     <SizedView style={styles.container}>
       <View style={styles.info}>
@@ -41,7 +42,7 @@ export default function ParkingLotCard({
           />
         </Pressable>
         <CustomButton
-          onPress={() => onNavigate(lat, lng)}
+          onPress={() => onNavigate(lat, lon)}
           text="경로찾기"
           size="small"
           iconName="navigation-variant-outline"
