@@ -25,8 +25,12 @@ import {useGetCurrentPosition} from 'hooks';
 const latitudeDelta = 0.04;
 const longitudeDelta = 0.04;
 
+type GoogleMapProps = {
+  activeType: ContentType;
+};
+
 //scrollTo
-function GoogleMap() {
+function GoogleMap({activeType}: GoogleMapProps) {
   const isClickMarker = useRecoilValue(isClickMarkerState);
   const [isShowBottomSheet, setIsShowBottomSheet] = useRecoilState(
     isShowBottomSheetState,
@@ -36,7 +40,7 @@ function GoogleMap() {
   const mapRef = useRef<MapView>(null);
   const {latitude, longitude} = useGetCurrentPosition();
 
-  const {getGasStationList} = useGasStation();
+  const {getMapList} = useGasStation();
 
   const [region, setRegion] = useState<Region>({
     latitude: 37.564362,
@@ -52,19 +56,44 @@ function GoogleMap() {
   }, []);
 
   // 오일 스테이션 정보를 받아옴
-  // 아마 공공api를 쓰는듯
   const {
     data: oilStations,
-    refetch,
-    isFetching,
-  } = useQuery(['oilStation'], async () => {
-    const response = await getGasStationList(
-      `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}`,
-    );
-    return response.data.map((oilStation: GasStation) => {
-      return oilStation;
-    });
-  });
+    refetch: refetchOilStations,
+    isFetching: fetchingOilStations,
+  } = useQuery(
+    ['oilStation'],
+    async () => {
+      const response = await getMapList(
+        `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}`,
+      );
+      return response.data.map((oilStation: GasStation) => {
+        return oilStation;
+      });
+    },
+    {
+      enabled: activeType === 'GAS_STATION',
+    },
+  );
+
+  // 주차장 정보를 받아옴
+  const {
+    data: parkingLots,
+    refetch: refetchParkingLots,
+    isFetching: fetchingParkingLots,
+  } = useQuery(
+    ['parkingLot'],
+    async () => {
+      const response = await getMapList(
+        `?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}`,
+      );
+      return response.data.map((oilStation: GasStation) => {
+        return oilStation;
+      });
+    },
+    {
+      enabled: activeType === 'PARKING_LOT',
+    },
+  );
 
   const onRegionChangeComplete = (newRegion: Region, zoom: number) => {
     setIsShowBottomSheet(false);
@@ -73,7 +102,7 @@ function GoogleMap() {
     setZoom(zoom);
   };
 
-  const onResearchOilStation = () => refetch();
+  const onResearchOilStation = () => refetchOilStations();
 
   const goMyLocation = () => {
     const region = {latitude, longitude, latitudeDelta, longitudeDelta};
@@ -93,29 +122,39 @@ function GoogleMap() {
           onRegionChangeComplete={onRegionChangeComplete}>
           <CurrentLocationMarker latitude={latitude} longitude={longitude} />
           <CenterMarker
-            isFetching={isFetching}
+            isFetching={fetchingOilStations || fetchingParkingLots}
             center={{
               latitude: region.latitude,
               longitude: region.longitude,
             }}
           />
-
-          {oilStations?.map(oilStation => (
-            <OilStationMarker
-              selectMarker={marker}
-              marker={oilStation}
-              key={oilStation.id}
-              zoom={zoom}
-              onPress={onPressMarker}
-            />
-          ))}
+          {activeType === 'GAS_STATION' &&
+            oilStations?.map(oilStation => (
+              <OilStationMarker
+                selectMarker={marker}
+                marker={oilStation}
+                key={oilStation.id}
+                zoom={zoom}
+                onPress={onPressMarker}
+              />
+            ))}
+          {/* {activeType === 'PARKING_LOT' &&
+            parkingLots?.map(parking => (
+              <OilStationMarker
+                selectMarker={marker}
+                marker={parking}
+                key={parking.id}
+                zoom={zoom}
+                onPress={onPressMarker}
+              />
+            ))} */}
         </CustomClusterMapView>
       </FlexView>
       {!isShowBottomSheet && (
         <SearchButton
           icon="refresh"
           name="여기에서 재 검색"
-          isFetching={isFetching}
+          isFetching={fetchingOilStations || fetchingParkingLots}
           onPress={onResearchOilStation}
         />
       )}

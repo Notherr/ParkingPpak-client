@@ -4,7 +4,7 @@ import {baseAPI} from 'api';
 export default function useGasStation() {
   return useMemo(
     () => ({
-      getGasStationList: async (query: string) => {
+      getMapList: async (query: string) => {
         try {
           const result = await baseAPI.get<any[]>(`/api/search/map${query}`);
           return result;

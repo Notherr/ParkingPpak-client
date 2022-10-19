@@ -27,14 +27,18 @@ type RouteType = {
 
 const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [parkingLotList, setParkingLotList] = useState<ParkingLot[]>([]);
-  const {getMyParkingLotList, removeLike, addLike} = useLike();
+  const {removeLike} = useLike();
+
+  const {getMapList} = useGasStation();
 
   useEffect(() => {
-    getMyParkingLotList().then(res => {
-      if (res.data) {
-        setParkingLotList(res.data);
-      }
-    });
+    getMapList(`?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}`).then(
+      res => {
+        if (res.data) {
+          setParkingLotList(res.data);
+        }
+      },
+    );
   }, []);
 
   const onToggle = (id: number) => {
@@ -72,16 +76,16 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [gasStationList, setGasStationList] = useState<GasStation[]>([]);
   const {removeLike} = useLike();
 
-  const {getGasStationList} = useGasStation();
+  const {getMapList} = useGasStation();
 
   useEffect(() => {
-    getGasStationList(
-      `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}`,
-    ).then(res => {
-      if (res.data) {
-        setGasStationList(res.data);
-      }
-    });
+    getMapList(`?type=gas_station&lat=${37.5666805}&lon=${126.9784147}`).then(
+      res => {
+        if (res.data) {
+          setGasStationList(res.data);
+        }
+      },
+    );
   }, []);
 
   const onToggle = (id: number) => {

@@ -2,57 +2,62 @@ import {palette} from '@/constant';
 import {View, Pressable, StyleSheet, Animated} from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 
-export default function TypeSwtich() {
+type Option<T> = {
+  label: string;
+  value: T;
+};
+
+type SwitchProps<T> = {
+  onToggle: (value: T) => void;
+  options: [Option<T>, Option<T>];
+  value: T;
+};
+
+export default function Switch<T>({onToggle, options, value}: SwitchProps<T>) {
   const animation = useRef(new Animated.Value(0)).current;
-  const [activeType, setActiveType] = useState<ContentType>('PARKING_LOT');
-  const toggleSwitch = (type: ContentType) => setActiveType(type);
 
   useEffect(() => {
     Animated.timing(animation, {
-      toValue: activeType === 'PARKING_LOT' ? 0 : 1,
+      toValue: options.findIndex(option => option.value !== value),
       duration: 300,
       useNativeDriver: false,
     }).start(() => {
       // 애니메이션 처리 완료 후 실행할 작업
     });
-  }, [activeType]);
+  }, [value]);
 
   return (
     <View style={[styles.container]}>
-      <Pressable
-        style={[styles.textWrapper, {left: 5}]}
-        onPress={() => toggleSwitch('PARKING_LOT')}
-        hitSlop={{top: 10, bottom: 10}}>
-        <Animated.Text
+      {options.map((option, index) => (
+        <Pressable
+          key={option.label}
           style={[
-            styles.text,
-            {
-              color: animation.interpolate({
-                inputRange: [0, 1],
-                outputRange: [palette.blue_2, palette.white],
-              }),
-            },
-          ]}>
-          주차장
-        </Animated.Text>
-      </Pressable>
-      <Pressable
-        style={[styles.textWrapper, {right: 5}]}
-        onPress={() => toggleSwitch('GAS_STATION')}
-        hitSlop={{top: 10, bottom: 10}}>
-        <Animated.Text
-          style={[
-            styles.text,
-            {
-              color: animation.interpolate({
-                inputRange: [0, 1],
-                outputRange: [palette.white, palette.blue_2],
-              }),
-            },
-          ]}>
-          주유소
-        </Animated.Text>
-      </Pressable>
+            styles.textWrapper,
+            index === 0 && {left: 5},
+            index === 1 && {right: 5},
+          ]}
+          onPress={() =>
+            onToggle(index === 0 ? options[1].value : options[0].value)
+          }
+          hitSlop={{top: 10, bottom: 10}}>
+          <Animated.Text
+            style={[
+              styles.text,
+              {
+                color: animation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange:
+                    index === 0
+                      ? [palette.blue_2, palette.white]
+                      : [palette.white, palette.blue_2],
+                }),
+              },
+            ]}>
+            {option.label}
+          </Animated.Text>
+        </Pressable>
+      ))}
+
       <Animated.View
         style={[
           styles.active,
