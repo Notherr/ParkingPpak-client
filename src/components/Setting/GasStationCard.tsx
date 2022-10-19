@@ -3,11 +3,12 @@ import useGetOilStationBrandLogo from '@/hooks/useGetOilStationBrandLogo';
 import {Pressable, StyleSheet, Text, Platform, View} from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {palette} from '@/constant';
-import {SizedView, CustomButton} from '@components/common';
+import {CustomButton} from '@components/common';
 
 type GasStationCardProps = {
   info: GasStation;
   like?: boolean;
+  onClickItem: (id: number) => void;
   onNavigate: (lat: number, lng: number) => void;
   onToggle: (id: number) => void;
 };
@@ -15,13 +16,14 @@ type GasStationCardProps = {
 export default function GasStationCard({
   info,
   like = false,
+  onClickItem,
   onNavigate,
   onToggle,
 }: GasStationCardProps) {
-  const {id, name, compName, dieselPrice, gasolinePrice, lat, lng} = info;
+  const {id, name, compName, dieselPrice, gasolinePrice, lat, lon} = info;
   const {logo} = useGetOilStationBrandLogo(compName);
   return (
-    <SizedView style={styles.container}>
+    <Pressable style={styles.press} onPress={() => onClickItem(id)}>
       <View style={styles.info}>
         <View style={styles.titleWrapper}>
           {logo}
@@ -51,18 +53,18 @@ export default function GasStationCard({
           />
         </Pressable>
         <CustomButton
-          onPress={() => onNavigate(lat, lng)}
+          onPress={() => onNavigate(lat, lon)}
           text="경로찾기"
           size="small"
           iconName="navigation-variant-outline"
         />
       </View>
-    </SizedView>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  press: {
     flex: 1,
     display: 'flex',
     justifyContent: 'space-between',

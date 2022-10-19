@@ -52,12 +52,17 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     console.log(lat, lng);
   };
 
+  const onClickItem = (id: number) => {
+    navigation.navigate('DetailPage', {state: {type: 'PARKING_LOT', id}});
+  };
+
   return parkingLotList.length ? (
     <FlatList<ParkingLot>
       data={parkingLotList}
       renderItem={({item}) => (
         <ParkingLotCard
           info={item}
+          onClickItem={onClickItem}
           onToggle={onToggle}
           onNavigate={onNavigate}
           like
@@ -101,12 +106,17 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     console.log(lat, lng);
   };
 
+  const onClickItem = (id: number) => {
+    navigation.navigate('DetailPage', {state: {type: 'GAS_STATION', id}});
+  };
+
   return gasStationList.length ? (
     <FlatList<GasStation>
       data={gasStationList}
       renderItem={({item}) => (
         <GasStationCard
           info={item}
+          onClickItem={onClickItem}
           onNavigate={onNavigate}
           onToggle={onToggle}
           like
