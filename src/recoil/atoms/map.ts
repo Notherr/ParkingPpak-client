@@ -12,10 +12,16 @@ export const isBottomSheetExpandedState = atom<boolean>({
   default: false,
 });
 
-// marker의 정보를 담고있음
-export const isMarkerState = atom<GasStation | null>({
-  key: 'map/isMarkerState',
-  default: null,
+// 선택된 주유소/주차장의 정보를 담고있음
+export const selectedInfoState = atom<
+  | {
+      type: ContentType;
+      info: GasStation | ParkingLot;
+    }
+  | undefined
+>({
+  key: 'map/selectedInfo',
+  default: undefined,
 });
 
 // 마커가 지금 클릭된 상태인지 boolean
@@ -23,7 +29,7 @@ export const isClickMarkerState = selector({
   key: 'map/isClickMarkerState',
   get: ({get}) => {
     const showBottomSheet = get(isShowBottomSheetState);
-    const markerInfo = get(isMarkerState);
+    const markerInfo = get(selectedInfoState);
 
     return showBottomSheet && !markerInfo;
   },

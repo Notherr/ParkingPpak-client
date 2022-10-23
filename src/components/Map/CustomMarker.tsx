@@ -1,29 +1,28 @@
 import React, {useMemo} from 'react';
 import {palette} from 'constant';
 import {Marker} from 'react-native-maps';
-import {useGetOilStationBrandLogo} from 'hooks';
 import {FlexView, BorderView, TextComponent} from 'components/common';
 
-type OilStationMarkerProps = {
-  marker: GasStation;
-  selectMarker: GasStation | null;
-  onPress: (marker: GasStation) => void;
+type CustomMarkerProps = {
+  title: string;
+  selected: boolean;
+  logo?: JSX.Element;
+  coordinate: {
+    longitude: number;
+    latitude: number;
+  };
+  onPress: () => void;
   zoom: number;
 };
 
-function OilStationMarker({
-  marker,
+function CustomMarker({
+  title,
+  logo,
   onPress,
+  coordinate,
   zoom,
-  selectMarker,
-}: OilStationMarkerProps) {
-  const {logo} = useGetOilStationBrandLogo(marker.compName);
-
-  const coordinate = {
-    longitude: marker.lon,
-    latitude: marker.lat,
-  };
-
+  selected,
+}: CustomMarkerProps) {
   function getMarkerStyleChangesLevel(zoom: number) {
     if (zoom <= 11) {
       return {
@@ -39,15 +38,12 @@ function OilStationMarker({
     }
   }
 
-  const isSelect = useMemo(() => marker.id === selectMarker?.id, []);
-
-  console.log(marker, zoom);
   return (
-    <Marker coordinate={coordinate} onPress={() => onPress(marker)}>
+    <Marker coordinate={coordinate} onPress={onPress}>
       <BorderView
         style={{
           ...getMarkerStyleChangesLevel(zoom),
-          backgroundColor: isSelect ? palette.blue_2 : '#fff',
+          backgroundColor: selected ? palette.blue_2 : '#fff',
           shadowColor: '#000',
           shadowOffset: {
             width: 0,
@@ -59,7 +55,7 @@ function OilStationMarker({
         }}
         paddingHorizontal={5}
         borderRadius={4}
-        borderColor={isSelect ? palette.blue_1 : '#ddd'}>
+        borderColor={selected ? palette.blue_1 : '#ddd'}>
         <FlexView
           flexSet={[
             zoom <= 11 ? 'center' : 'space-between',
@@ -71,8 +67,8 @@ function OilStationMarker({
             <TextComponent
               fontSize={16}
               fontWeight={'bold'}
-              color={isSelect ? '#fff' : '#000'}>
-              {marker.gasolinePrice.toLocaleString()}
+              color={selected ? '#fff' : '#000'}>
+              {title}
             </TextComponent>
           )}
         </FlexView>
@@ -81,4 +77,4 @@ function OilStationMarker({
   );
 }
 
-export default OilStationMarker;
+export default CustomMarker;

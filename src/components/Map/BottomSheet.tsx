@@ -14,7 +14,7 @@ import Animated, {
 import {useSetRecoilState, useRecoilState} from 'recoil';
 import {
   isShowBottomSheetState,
-  isMarkerState,
+  selectedInfoState,
   isBottomSheetMaxHeightState,
   isBottomSheetExpandedState,
 } from '@/recoil/atoms';
@@ -32,7 +32,7 @@ export default function BottomSheet({
     useScrollBottomSheet(showBottomSheet);
 
   const setIsShowBottomSheet = useSetRecoilState(isShowBottomSheetState);
-  const setIsMarker = useSetRecoilState(isMarkerState);
+  const selectedInfo = useSetRecoilState(selectedInfoState);
   const [isMaxHeight, setIsMaxHeight] = useRecoilState(
     isBottomSheetMaxHeightState,
   );
@@ -64,7 +64,7 @@ export default function BottomSheet({
         console.log(3);
 
         setIsShowBottomSheet(false);
-        setIsMarker(null);
+        selectedInfo(undefined);
         scrollTo(0);
       }
     },

@@ -2,7 +2,7 @@ export {default as GoogleMap} from './GoogleMap';
 export {default as SearchBox} from './SearchBox';
 export {default as Switch} from './Switch';
 export {default as ListButton} from './ListButton';
-export {default as OilStationMarker} from './OilStationMarker';
+export {default as CustomMarker} from './CustomMarker';
 export {default as MapZoomPanel} from './MapZoomPanel';
 export {default as CenterMarker} from './CenterMarker';
 export {default as SearchButton} from './SearchButton';

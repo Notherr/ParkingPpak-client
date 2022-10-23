@@ -15,13 +15,14 @@ import useLike from '@/recoil/actions/useLike';
 import ParkingLotCard from '@/components/Setting/ParkingLotCard';
 import GasStationCard from '@/components/Setting/GasStationCard';
 import {TabView, TabBar, SceneRendererProps} from 'react-native-tab-view';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 type RouteType = {
   key: ContentType;
   title: string;
 };
 
-const ParkingRoute = () => {
+const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [parkingLotList, setParkingLotList] = useState<ParkingLot[]>([]);
   const {getMyParkingLotList, removeLike, addLike} = useLike();
   useEffect(() => {
@@ -43,12 +44,17 @@ const ParkingRoute = () => {
     console.log(lat, lng);
   };
 
+  const onClickItem = (id: number) => {
+    navigation.navigate('DetailPage', {state: {type: 'PARKING_LOT', id}});
+  };
+
   return parkingLotList.length ? (
     <FlatList<ParkingLot>
       data={parkingLotList}
       renderItem={({item}) => (
         <ParkingLotCard
           info={item}
+          onClickItem={onClickItem}
           onToggle={onToggle}
           onNavigate={onNavigate}
           like
@@ -63,7 +69,7 @@ const ParkingRoute = () => {
   );
 };
 
-const OilRoute = () => {
+const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [gasStationList, setGasStationList] = useState<GasStation[]>([]);
   const {getMyGasStationList, removeLike} = useLike();
 
@@ -88,12 +94,17 @@ const OilRoute = () => {
     console.log(lat, lng);
   };
 
+  const onClickItem = (id: number) => {
+    navigation.navigate('DetailPage', {state: {type: 'GAS_STATION', id}});
+  };
+
   return gasStationList.length ? (
     <FlatList<GasStation>
       data={gasStationList}
       renderItem={({item}) => (
         <GasStationCard
           info={item}
+          onClickItem={onClickItem}
           onNavigate={onNavigate}
           onToggle={onToggle}
           like
@@ -108,21 +119,6 @@ const OilRoute = () => {
   );
 };
 
-const renderScene = ({
-  route,
-}: SceneRendererProps & {
-  route: RouteType;
-}) => {
-  switch (route.key) {
-    case 'PARKING_LOT':
-      return <ParkingRoute />;
-    case 'GAS_STATION':
-      return <OilRoute />;
-    default:
-      return <></>;
-  }
-};
-
 const routes: RouteType[] = [
   {key: 'PARKING_LOT', title: '주차장'},
   {key: 'GAS_STATION', title: '주유소'},
@@ -130,9 +126,27 @@ const routes: RouteType[] = [
 
 type ParamType = RouteProp<{params: {type?: ContentType}}, 'params'>;
 
-export default function LikeScreen({route}: {route: ParamType}) {
+export default function LikeScreen({
+  navigation,
+  route,
+}: NativeStackScreenProps<any>) {
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState<number>();
+
+  const renderScene = ({
+    route: sceneRoute,
+  }: SceneRendererProps & {
+    route: RouteType;
+  }) => {
+    switch (sceneRoute.key) {
+      case 'PARKING_LOT':
+        return <ParkingRoute navigation={navigation} route={route} />;
+      case 'GAS_STATION':
+        return <OilRoute navigation={navigation} route={route} />;
+      default:
+        return <></>;
+    }
+  };
 
   useEffect(() => {
     if (route.params?.type === 'GAS_STATION') {

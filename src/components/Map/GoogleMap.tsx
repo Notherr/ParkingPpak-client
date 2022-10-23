@@ -5,11 +5,11 @@ import MapView from 'react-native-maps';
 import {useRecoilValue, useRecoilState} from 'recoil';
 import {
   isShowBottomSheetState,
-  isMarkerState,
+  selectedInfoState,
   isClickMarkerState,
 } from '@/recoil/atoms';
 import {
-  OilStationMarker,
+  CustomMarker,
   CenterMarker,
   SearchButton,
   MyLocationButton,
@@ -20,7 +20,7 @@ import {
 } from 'components/Map';
 import {FlexView} from 'components/common';
 import {useGasStation} from 'recoil/actions';
-import {useGetCurrentPosition} from 'hooks';
+import {useGetCurrentPosition, useGetOilStationBrandLogo} from 'hooks';
 
 const latitudeDelta = 0.04;
 const longitudeDelta = 0.04;
@@ -35,7 +35,7 @@ function GoogleMap({activeType}: GoogleMapProps) {
   const [isShowBottomSheet, setIsShowBottomSheet] = useRecoilState(
     isShowBottomSheetState,
   );
-  const [marker, setMarker] = useRecoilState(isMarkerState);
+  const [marker, setMarker] = useRecoilState(selectedInfoState);
   const [zoom, setZoom] = useState(12);
   const mapRef = useRef<MapView>(null);
   const {latitude, longitude} = useGetCurrentPosition();
@@ -50,10 +50,13 @@ function GoogleMap({activeType}: GoogleMapProps) {
   });
 
   // 마커 클릭시 bottom sheet가 올라옴
-  const onPressMarker = useCallback((marker: GasStation) => {
-    setIsShowBottomSheet(true);
-    setMarker(marker);
-  }, []);
+  const onPressMarker = useCallback(
+    (type: ContentType, info: GasStation | ParkingLot) => {
+      setIsShowBottomSheet(true);
+      setMarker({info, type});
+    },
+    [],
+  );
 
   // 오일 스테이션 정보를 받아옴
   const {
@@ -86,8 +89,8 @@ function GoogleMap({activeType}: GoogleMapProps) {
       const response = await getMapList(
         `?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}`,
       );
-      return response.data.map((oilStation: GasStation) => {
-        return oilStation;
+      return response.data.map((parkingLot: ParkingLot) => {
+        return parkingLot;
       });
     },
     {
@@ -97,7 +100,7 @@ function GoogleMap({activeType}: GoogleMapProps) {
 
   const onRegionChangeComplete = (newRegion: Region, zoom: number) => {
     setIsShowBottomSheet(false);
-    setMarker(null);
+    setMarker(undefined);
     setRegion(newRegion);
     setZoom(zoom);
   };
@@ -130,24 +133,33 @@ function GoogleMap({activeType}: GoogleMapProps) {
           />
           {activeType === 'GAS_STATION' &&
             oilStations?.map(oilStation => (
-              <OilStationMarker
-                selectMarker={marker}
-                marker={oilStation}
+              <CustomMarker
+                title={oilStation.gasolinePrice.toLocaleString()}
+                logo={useGetOilStationBrandLogo(oilStation.compName)?.logo}
+                selected={marker?.info.id === oilStation.id}
                 key={oilStation.id}
                 zoom={zoom}
-                onPress={onPressMarker}
+                coordinate={{
+                  longitude: oilStation.lon,
+                  latitude: oilStation.lat,
+                }}
+                onPress={() => onPressMarker('GAS_STATION', oilStation)}
               />
             ))}
-          {/* {activeType === 'PARKING_LOT' &&
+          {activeType === 'PARKING_LOT' &&
             parkingLots?.map(parking => (
-              <OilStationMarker
-                selectMarker={marker}
-                marker={parking}
+              <CustomMarker
+                title={parking.parkingName.toLocaleString()}
+                selected={marker?.info.id === parking.id}
                 key={parking.id}
                 zoom={zoom}
-                onPress={onPressMarker}
+                coordinate={{
+                  longitude: parking.lon,
+                  latitude: parking.lat,
+                }}
+                onPress={() => onPressMarker('PARKING_LOT', parking)}
               />
-            ))} */}
+            ))}
         </CustomClusterMapView>
       </FlexView>
       {!isShowBottomSheet && (
@@ -160,7 +172,7 @@ function GoogleMap({activeType}: GoogleMapProps) {
       )}
       <MyLocationButton onPress={goMyLocation} />
       <BottomSheet showBottomSheet={!!marker}>
-        {marker && <SelectMarkerCard marker={marker} />}
+        {/* {marker && <SelectMarkerCard marker={marker} />} */}
       </BottomSheet>
     </>
   );
