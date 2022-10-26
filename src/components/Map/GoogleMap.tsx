@@ -53,7 +53,11 @@ function GoogleMap({activeType}: GoogleMapProps) {
   const onPressMarker = useCallback(
     (type: ContentType, info: GasStation | ParkingLot) => {
       setIsShowBottomSheet(true);
-      setMarker({info, type});
+      setMarker(
+        type === 'GAS_STATION'
+          ? {info: info as GasStation, type}
+          : {info: info as ParkingLot, type},
+      );
     },
     [],
   );
@@ -121,6 +125,7 @@ function GoogleMap({activeType}: GoogleMapProps) {
       <FlexView style={{position: 'relative'}}>
         <CustomClusterMapView
           ref={mapRef}
+          activeType={activeType}
           initialRegion={region}
           onRegionChangeComplete={onRegionChangeComplete}>
           <CurrentLocationMarker latitude={latitude} longitude={longitude} />
@@ -172,7 +177,7 @@ function GoogleMap({activeType}: GoogleMapProps) {
       )}
       <MyLocationButton onPress={goMyLocation} />
       <BottomSheet showBottomSheet={!!marker}>
-        {/* {marker && <SelectMarkerCard marker={marker} />} */}
+        {marker && <SelectMarkerCard marker={marker} />}
       </BottomSheet>
     </>
   );

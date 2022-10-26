@@ -34,6 +34,7 @@ type CustomClusterMapViewType = ClusterMarkerProperties & {
   otherChildren?: JSX.Element;
   region?: Region;
   initialRegion?: Region;
+  activeType: ContentType;
   superClusterRef: {current: SuperCluster | null};
   clusterColor?: string;
   clusterTextColor?: string;
@@ -60,6 +61,7 @@ function CustomClusterMapView(
     clusterTextColor = '#FFFFFF',
     tracksViewChanges = false,
     superClusterRef = {current: null},
+    activeType,
     ...restProps
   }: CustomClusterMapViewType,
   ref: Ref<MapView> | MapView,
@@ -150,6 +152,7 @@ function CustomClusterMapView(
           propsChildren[marker.properties.index]
         ) : (
           <ClusterMarker
+            activeType={activeType}
             key={`cluster-${idx}`}
             clusterColor={clusterColor}
             point={marker?.geometry}

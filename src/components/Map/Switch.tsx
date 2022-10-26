@@ -18,7 +18,7 @@ export default function Switch<T>({onToggle, options, value}: SwitchProps<T>) {
 
   useEffect(() => {
     Animated.timing(animation, {
-      toValue: options.findIndex(option => option.value !== value),
+      toValue: options.findIndex(option => option.value === value),
       duration: 300,
       useNativeDriver: false,
     }).start(() => {
@@ -36,9 +36,13 @@ export default function Switch<T>({onToggle, options, value}: SwitchProps<T>) {
             index === 0 && {left: 5},
             index === 1 && {right: 5},
           ]}
-          onPress={() =>
-            onToggle(index === 0 ? options[1].value : options[0].value)
-          }
+          onPress={() => {
+            const target = options.find(
+              option => option.value !== value,
+            )?.value;
+
+            if (target) onToggle(target);
+          }}
           hitSlop={{top: 10, bottom: 10}}>
           <Animated.Text
             style={[

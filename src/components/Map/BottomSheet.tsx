@@ -10,13 +10,13 @@ import Animated, {
   useAnimatedGestureHandler,
   interpolate,
   Extrapolate,
+  runOnJS,
 } from 'react-native-reanimated';
 import {useSetRecoilState, useRecoilState} from 'recoil';
 import {
   isShowBottomSheetState,
   selectedInfoState,
   isBottomSheetMaxHeightState,
-  isBottomSheetExpandedState,
 } from '@/recoil/atoms';
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
@@ -51,21 +51,18 @@ export default function BottomSheet({
     },
     onEnd: () => {
       if (translateY.value > MAX_TRANSLATE_Y + 50 && isMaxHeight) {
-        console.log(1);
         scrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
         setIsMaxHeight(false);
       } else if (translateY.value < DEFAULT_SHOW_SCREEN_HEIGHT) {
         scrollTo(MAX_TRANSLATE_Y);
-        setIsMaxHeight(true);
+        // setIsMaxHeight(true);
       } else if (
         translateY.value > DEFAULT_SHOW_SCREEN_HEIGHT &&
         !isMaxHeight
       ) {
-        console.log(3);
-
-        setIsShowBottomSheet(false);
-        selectedInfo(undefined);
         scrollTo(0);
+        // setIsShowBottomSheet(false);
+        // selectedInfo(undefined);
       }
     },
   });

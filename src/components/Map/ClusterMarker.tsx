@@ -4,23 +4,25 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {LatLng, Marker} from 'react-native-maps';
 import {returnMarkerStyle} from 'utils';
 
-type ClusteredMarkerType = {
+type ClusterMarkerType = {
   point: Point | undefined;
   properties: GeoJsonProperties | undefined;
   onPress?: () => void;
   clusterColor?: string;
   clusterTextColor?: string;
   tracksViewChanges?: boolean;
+  activeType: ContentType;
 };
 
-const ClusteredMarker = ({
+const ClusterMarker = ({
   properties,
   onPress,
   clusterColor,
   clusterTextColor,
   point,
   tracksViewChanges,
-}: ClusteredMarkerType) => {
+  activeType,
+}: ClusterMarkerType) => {
   const points = properties?.point_count;
   const {width, height, fontSize} = returnMarkerStyle(points);
 
@@ -55,7 +57,7 @@ const ClusteredMarker = ({
               fontSize,
             },
           ]}>
-          주유소({points})
+          {activeType === 'GAS_STATION' ? '주유소' : '주차장'}({points})
         </Text>
       </TouchableOpacity>
     </Marker>
@@ -87,4 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(ClusteredMarker);
+export default memo(ClusterMarker);

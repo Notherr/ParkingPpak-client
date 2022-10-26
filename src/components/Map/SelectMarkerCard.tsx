@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import MapView from 'react-native-maps';
 import {useRecoilValue} from 'recoil';
 import Icons from 'react-native-vector-icons/MaterialIcons';
@@ -12,16 +12,43 @@ import {
   TextComponent,
   CustomButton,
   BorderView,
+  Loading,
 } from 'components/common';
 import {CurrentLocationMarker} from 'components/Map';
 
 type SelectMarkerCardType = {
-  marker: GasStation;
+  marker: GasStationWrapper | ParkingLotWrapper;
 };
 
 function SelectMarkerCard({marker}: SelectMarkerCardType) {
-  const {logo} = useGetOilStationBrandLogo(marker.compName);
+  const [markerInfo, setMarkerInfo] = useState<{
+    title: string;
+    logo?: JSX.Element;
+    subInfo?: string;
+  }>();
+
   const isMaxHeight = useRecoilValue(isBottomSheetMaxHeightState);
+
+  useEffect(() => {
+    const {type, info} = marker;
+    if (type === 'GAS_STATION') {
+      const {logo} = useGetOilStationBrandLogo(info.compName);
+      setMarkerInfo({
+        title: info.compName,
+        logo,
+        subInfo: `${info?.gasolinePrice.toLocaleString()}원`,
+      });
+    } else {
+      setMarkerInfo({
+        title: info.parkingName,
+        subInfo: `${info?.rates.toLocaleString()}원`,
+      });
+    }
+  }, [marker]);
+
+  if (!markerInfo) {
+    return <Loading />;
+  }
 
   return (
     <View
@@ -47,9 +74,9 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
             <FlexView
               flexSet={['center']}
               style={{width: 'auto', height: 'auto'}}>
-              {logo}
+              {markerInfo?.logo}
               <TextComponent fontSize={20} style={{paddingHorizontal: 10}}>
-                {marker?.compName}
+                {markerInfo.title}
               </TextComponent>
             </FlexView>
             {!isMaxHeight && <Icons name="star" size={24} />}
@@ -63,19 +90,24 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
                   휘발유
                 </TextComponent>
                 <TextComponent fontSize={24}>
-                  {marker?.gasolinePrice.toLocaleString()}원
+                  {markerInfo.subInfo}
                 </TextComponent>
               </FlexView>
-              <CustomButton text="길찾기" iconName="navigation" size="small" />
+              <CustomButton
+                text="길찾기"
+                iconName="navigation"
+                size="small"
+                style={{paddingHorizontal: 16}}
+              />
             </FlexView>
           )}
         </FlexView>
         {isMaxHeight && (
           <>
             <View style={{backgroundColor: palette.grey_7, height: 10}} />
-            {/* <PrimaryInformationComponent marker={marker} /> */}
+            {/* <PrimaryInformationComponent marker={marker.info} /> */}
             <View style={{backgroundColor: palette.grey_7, height: 10}} />
-            {/* <LocationInformationComponent marker={marker} /> */}
+            {/* <LocationInformationComponent marker={marker.info} /> */}
             <FlexView
               style={{
                 position: 'absolute',
@@ -101,7 +133,7 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
 
 export default SelectMarkerCard;
 
-function PrimaryInformationComponent({marker}: SelectMarkerCardType) {
+function PrimaryInformationComponent(info: GasStation) {
   return (
     <View style={{padding: 20}}>
       <FlexView flexDirection="column" style={{height: 'auto'}}>
@@ -117,7 +149,7 @@ function PrimaryInformationComponent({marker}: SelectMarkerCardType) {
           style={{height: 'auto', marginBottom: 20}}>
           <Icons name="local-gas-station" size={20} style={{marginRight: 40}} />
           <TextComponent fontSize={14}>
-            휘발유 1L당 {marker.gasolinePrice.toLocaleString()}원
+            휘발유 1L당 {info.gasolinePrice.toLocaleString()}원
           </TextComponent>
         </FlexView>
         <FlexView
@@ -137,7 +169,7 @@ function PrimaryInformationComponent({marker}: SelectMarkerCardType) {
   );
 }
 
-function LocationInformationComponent({marker}: SelectMarkerCardType) {
+function LocationInformationComponent(info: ParkingLot) {
   const mapRef = useRef<MapView | null>(null);
 
   const getRegionForZoom = (lat: number, lon: number, zoom: number) => {
@@ -153,9 +185,7 @@ function LocationInformationComponent({marker}: SelectMarkerCardType) {
   };
 
   useEffect(() => {
-    mapRef.current?.animateToRegion(
-      getRegionForZoom(marker.lat, marker.lon, 15),
-    );
+    mapRef.current?.animateToRegion(getRegionForZoom(info.lat, info.lon, 15));
   }, []);
 
   return (
@@ -177,15 +207,12 @@ function LocationInformationComponent({marker}: SelectMarkerCardType) {
             ref={mapRef}
             style={styles.map}
             initialRegion={{
-              latitude: marker.lat,
-              longitude: marker.lon,
+              latitude: info.lat,
+              longitude: info.lon,
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}>
-            <CurrentLocationMarker
-              latitude={marker.lat}
-              longitude={marker.lon}
-            />
+            <CurrentLocationMarker latitude={info.lat} longitude={info.lon} />
           </MapView>
         </BorderView>
         <FlexView

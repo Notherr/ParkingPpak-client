@@ -15,4 +15,14 @@ declare global {
     logo: T;
     title: T;
   };
+
+  type GasStationWrapper = {
+    type: 'GAS_STATION';
+    info: GasStation;
+  };
+
+  type ParkingLotWrapper = {
+    type: 'PARKING_LOT';
+    info: ParkingLot;
+  };
 }

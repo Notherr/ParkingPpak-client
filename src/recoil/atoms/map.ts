@@ -6,19 +6,9 @@ export const isShowBottomSheetState = atom<boolean>({
   default: false,
 });
 
-// bottomSheet의 detail 버전이 보여지고있는지 boolean
-export const isBottomSheetExpandedState = atom<boolean>({
-  key: 'map/isBottomSheetExpandedState',
-  default: false,
-});
-
 // 선택된 주유소/주차장의 정보를 담고있음
 export const selectedInfoState = atom<
-  | {
-      type: ContentType;
-      info: GasStation | ParkingLot;
-    }
-  | undefined
+  GasStationWrapper | ParkingLotWrapper | undefined
 >({
   key: 'map/selectedInfo',
   default: undefined,

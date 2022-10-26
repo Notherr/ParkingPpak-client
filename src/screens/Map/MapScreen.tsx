@@ -1,18 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {useRecoilValue} from 'recoil';
-import {isClickMarkerState} from '@/recoil/atoms';
+import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {
-  SearchBox,
-  Switch,
-  GoogleMap,
-  MapTypeConverter,
-  ListButton,
-} from 'components/Map';
+import {SearchBox, Switch, GoogleMap, MapTypeConverter} from 'components/Map';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 function MapScreen({navigation, route}: NativeStackScreenProps<any>) {
-  const isClickMarker = useRecoilValue(isClickMarkerState);
   const [activeType, setActiveType] = useState<ContentType>('PARKING_LOT');
   const toggleSwitch = (type: ContentType) => setActiveType(type);
 
@@ -29,7 +20,6 @@ function MapScreen({navigation, route}: NativeStackScreenProps<any>) {
         value={activeType}
         onToggle={toggleSwitch}
       />
-      {/* <ListButton navigation={navigation} route={route} /> */}
     </View>
   );
 }
