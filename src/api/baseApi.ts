@@ -2,10 +2,7 @@ import authStorage from '@/storages/authStorage';
 import {AxiosRequestConfig} from 'axios';
 import {APIService} from './apiService';
 
-// react-native-config 라이브러리 추후 적용예정
-// https://velog.io/@ricale/React-Native-%EB%B9%8C%EB%93%9C-%ED%99%98%EA%B2%BD-%EB%B6%84%EB%A6%AC
-// 'https://parkingppak-server-zcyrt.run.goorm.io'
-const baseURL = 'http://localhost:8080';
+const baseURL = 'http://3.34.193.83:80';
 
 const baseAPI = new APIService({
   baseURL: baseURL,
