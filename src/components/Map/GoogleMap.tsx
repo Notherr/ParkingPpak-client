@@ -144,7 +144,7 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
           {activeType === 'GAS_STATION' &&
             oilStations?.map(oilStation => (
               <CustomMarker
-                title={oilStation.gasolinePrice.toLocaleString()}
+                title={`${oilStation.gasolinePrice.toLocaleString()}원`}
                 logo={useGetOilStationBrandLogo(oilStation.compName)?.logo}
                 selected={marker?.info.id === oilStation.id}
                 key={oilStation.id}
@@ -159,7 +159,11 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
           {activeType === 'PARKING_LOT' &&
             parkingLots?.map(parking => (
               <CustomMarker
-                title={parking.parkingName.toLocaleString()}
+                title={`${
+                  parking.rates === 0
+                    ? '무료주차장'
+                    : `${parking.addTimeRates}분당 ${parking.rates}원`
+                }`}
                 selected={marker?.info.id === parking.id}
                 key={parking.id}
                 zoom={zoom}
