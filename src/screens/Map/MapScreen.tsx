@@ -5,12 +5,14 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 function MapScreen({navigation, route}: NativeStackScreenProps<any>) {
   const [activeType, setActiveType] = useState<ContentType>('PARKING_LOT');
+  const [keyword, setKeyword] = useState<string>();
+
   const toggleSwitch = (type: ContentType) => setActiveType(type);
 
   return (
     <View style={styles.box}>
-      <GoogleMap activeType={activeType} />
-      <SearchBox navigation={navigation} route={route} />
+      <GoogleMap activeType={activeType} keyword={keyword} />
+      <SearchBox navigation={navigation} route={route} onSearch={setKeyword} />
       <MapTypeConverter navigation={navigation} route={route} />
       <Switch<ContentType>
         options={[

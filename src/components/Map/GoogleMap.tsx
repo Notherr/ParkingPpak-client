@@ -27,10 +27,11 @@ const longitudeDelta = 0.04;
 
 type GoogleMapProps = {
   activeType: ContentType;
+  keyword?: string;
 };
 
 //scrollTo
-function GoogleMap({activeType}: GoogleMapProps) {
+function GoogleMap({activeType, keyword}: GoogleMapProps) {
   const isClickMarker = useRecoilValue(isClickMarkerState);
   const [isShowBottomSheet, setIsShowBottomSheet] = useRecoilState(
     isShowBottomSheetState,
@@ -115,6 +116,10 @@ function GoogleMap({activeType}: GoogleMapProps) {
     const region = {latitude, longitude, latitudeDelta, longitudeDelta};
     mapRef.current?.animateToRegion(region);
   };
+
+  useEffect(() => {
+    console.log(keyword);
+  }, [keyword]);
 
   if (!region) {
     return <ActivityIndicator />;
