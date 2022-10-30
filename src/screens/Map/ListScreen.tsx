@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   FlatList,
   useWindowDimensions,
+  TextInput,
 } from 'react-native';
 import GasStationCard from '@/components/Setting/GasStationCard';
 import useLike from '@/recoil/actions/useLike';
@@ -156,6 +157,7 @@ export default function ListScreen({
 
   const [index, setIndex] = React.useState<number>(1);
   const layout = useWindowDimensions();
+  const [input, setInput] = useState<string>();
 
   const goBack = () => {
     navigation.pop();
@@ -168,7 +170,7 @@ export default function ListScreen({
 
   return (
     <View style={styles.box}>
-      <View style={[styles.header]}>
+      <View style={styles.header}>
         <Pressable
           style={({pressed}) => [
             styles.button,
@@ -178,31 +180,25 @@ export default function ListScreen({
           onPress={goBack}>
           <Icon name="arrow-back" size={24} style={styles.icon} />
         </Pressable>
-        <View style={styles.inputWrapper}>
-          <GooglePlacesAutocomplete
-            placeholder="장소를 검색하세요"
-            autoFillOnNotFound
-            fetchDetails
-            enablePoweredByContainer={false}
-            styles={styles.input}
-            onPress={(data, details) => {
-              if (details) {
-                const {lat, lng} = details.geometry.location;
-                // 선택값의 위도, 경도값
-                console.log(lat, lng);
-              }
-            }}
-            // key를 환경변수로 관리해야하는데,..ㅜㅠ
-            query={{
-              key: 'AIzaSyD8bKZW6HCxa8BmvD9BgiQmcE-4VJCPWdM',
-              language: 'ko',
-              components: 'country:kr',
-            }}
-            // 현 위치 찾기 기능을 추가할때 사용할 props
-            // currentLocation
-            // currentLocationLabel="현 위치 찾기"
+        <TextInput
+          style={styles.input}
+          onChangeText={setInput}
+          value={input}
+          placeholder="장소를 검색하세요"
+        />
+        <Pressable
+          style={({pressed}) => [
+            styles.button,
+            Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
+          ]}
+          android_ripple={{color: palette.white}}>
+          <Icon
+            name="search"
+            size={24}
+            style={styles.search}
+            color={palette.grey_2}
           />
-        </View>
+        </Pressable>
       </View>
       <View style={styles.content}>
         {index === undefined ? (
@@ -241,17 +237,7 @@ const styles = StyleSheet.create({
     marginTop: 50, // 수정필요
     paddingHorizontal: 20,
   },
-  inputWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    borderRadius: 4,
-    alignItems: 'center',
-    backgroundColor: palette.grey_7,
-    paddingHorizontal: 10,
-    shadowColor: '#8B8B8B',
-    paddingTop: 4, // 인풋 자체의 패딩 바텀이 있는것같아 균형을 맞추기 위해 설정함
-  },
-  input: {backgroundColor: 'red'},
+  input: {marginVertical: 6, padding: 10, flex: 1},
   content: {flex: 1},
   loading: {flex: 1},
   emptyBox: {
@@ -268,4 +254,5 @@ const styles = StyleSheet.create({
   icon: {
     color: palette.grey_3,
   },
+  search: {},
 });
