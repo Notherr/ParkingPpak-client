@@ -2,6 +2,7 @@ import React, {useMemo} from 'react';
 import {palette} from 'constant';
 import {Marker} from 'react-native-maps';
 import {FlexView, BorderView, TextComponent} from 'components/common';
+import {StyleSheet, View} from 'react-native';
 
 type CustomMarkerProps = {
   title: string;
@@ -26,13 +27,11 @@ function CustomMarker({
   function getMarkerStyleChangesLevel(zoom: number) {
     if (zoom <= 11) {
       return {
-        width: 35,
         height: 35,
         borderRadius: 50,
       };
     } else {
       return {
-        width: 90,
         height: 40,
       };
     }
@@ -53,16 +52,20 @@ function CustomMarker({
           shadowRadius: 2.22,
           elevation: 3,
         }}
+        width={100}
         paddingHorizontal={5}
         borderRadius={4}
         borderColor={selected ? palette.blue_1 : '#ddd'}>
-        <FlexView
-          flexSet={[
-            zoom <= 11 ? 'center' : 'space-between',
-            'center',
-            'center',
-          ]}>
-          {logo}
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%',
+          }}>
+          {logo && <View style={{width: 30}}>{logo}</View>}
           {zoom > 11 && (
             <TextComponent
               fontSize={16}
@@ -71,7 +74,7 @@ function CustomMarker({
               {title}
             </TextComponent>
           )}
-        </FlexView>
+        </View>
       </BorderView>
     </Marker>
   );

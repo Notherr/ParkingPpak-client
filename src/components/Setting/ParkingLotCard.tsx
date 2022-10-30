@@ -19,7 +19,7 @@ export default function ParkingLotCard({
   onNavigate,
   onToggle,
 }: ParkingLotCardProps) {
-  const {parkingName, id, lat, lon, address, payYN} = info;
+  const {parkingName, id, lat, lon, payYN, rates, timeRates, addRates} = info;
 
   return (
     <Pressable style={styles.press} onPress={() => onClickItem(id)}>
@@ -27,7 +27,9 @@ export default function ParkingLotCard({
         <Text style={styles.title}>
           {parkingName} {!payYN && '(무료)'}
         </Text>
-        <Text style={styles.address}>{address}</Text>
+        <Text style={styles.address}>
+          {rates}원 / {timeRates} {addRates}
+        </Text>
       </View>
       <View style={styles.buttonWrapper}>
         <Pressable
