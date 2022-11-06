@@ -28,7 +28,7 @@ type RouteType = {
 
 const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [parkingLotList, setParkingLotList] = useState<ParkingLot[]>([]);
-  const {removeLike} = useLike();
+  const {removeLike, addLike} = useLike();
 
   const {getMapList} = useGasStation();
 
@@ -42,11 +42,30 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     );
   }, []);
 
-  const onToggle = (id: number) => {
-    removeLike({dataId: id, type: 'PARKING_LOT'}).then(() => {
-      // eslint-disable-next-line react/prop-types
-      setParkingLotList(props => props.filter(lot => lot.id !== id));
-    });
+  const onToggle = (id: number, like: boolean) => {
+    if (like) {
+      addLike({dataId: id, type: 'PARKING_LOT'}).then(() => {
+        setParkingLotList(props =>
+          props.map(lot => {
+            if (lot.id === id) {
+              return {...lot, like: true};
+            }
+            return lot;
+          }),
+        );
+      });
+    } else {
+      removeLike({dataId: id, type: 'PARKING_LOT'}).then(() => {
+        setParkingLotList(props =>
+          props.map(lot => {
+            if (lot.id === id) {
+              return {...lot, like: false};
+            }
+            return lot;
+          }),
+        );
+      });
+    }
   };
 
   const onNavigate = (lat: number, lng: number) => {
@@ -66,7 +85,6 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
           onClickItem={onClickItem}
           onToggle={onToggle}
           onNavigate={onNavigate}
-          like
         />
       )}
       keyExtractor={item => item.parkingName}
@@ -80,7 +98,7 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
 
 const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [gasStationList, setGasStationList] = useState<GasStation[]>([]);
-  const {removeLike} = useLike();
+  const {removeLike, addLike} = useLike();
 
   const {getMapList} = useGasStation();
 
@@ -94,13 +112,30 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     );
   }, []);
 
-  const onToggle = (id: number) => {
-    removeLike({dataId: id, type: 'GAS_STATION'}).then(() => {
-      if (gasStationList) {
-        // eslint-disable-next-line react/prop-types
-        setGasStationList(props => props.filter(gas => gas.id !== id));
-      }
-    });
+  const onToggle = (id: number, like: boolean) => {
+    if (like) {
+      addLike({dataId: id, type: 'GAS_STATION'}).then(() => {
+        setGasStationList(props =>
+          props.map(gas => {
+            if (gas.id === id) {
+              return {...gas, like: true};
+            }
+            return gas;
+          }),
+        );
+      });
+    } else {
+      removeLike({dataId: id, type: 'GAS_STATION'}).then(() => {
+        setGasStationList(props =>
+          props.map(gas => {
+            if (gas.id === id) {
+              return {...gas, like: false};
+            }
+            return gas;
+          }),
+        );
+      });
+    }
   };
 
   const onNavigate = (lat: number, lng: number) => {
@@ -120,7 +155,6 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
           onClickItem={onClickItem}
           onNavigate={onNavigate}
           onToggle={onToggle}
-          like
         />
       )}
       keyExtractor={item => item.name}

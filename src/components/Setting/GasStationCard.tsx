@@ -7,20 +7,18 @@ import {CustomButton} from '@components/common';
 
 type GasStationCardProps = {
   info: GasStation;
-  like?: boolean;
   onClickItem: (id: number) => void;
   onNavigate: (lat: number, lng: number) => void;
-  onToggle: (id: number) => void;
+  onToggle: (id: number, like: boolean) => void;
 };
 
 export default function GasStationCard({
   info,
-  like = false,
   onClickItem,
   onNavigate,
   onToggle,
 }: GasStationCardProps) {
-  const {id, name, compName, dieselPrice, gasolinePrice, lat, lon} = info;
+  const {id, name, compName, dieselPrice, gasolinePrice, lat, lon, like} = info;
   const {logo} = useGetOilStationBrandLogo(compName);
   return (
     <Pressable style={styles.press} onPress={() => onClickItem(id)}>
@@ -45,7 +43,7 @@ export default function GasStationCard({
             Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
           ]}
           android_ripple={{color: palette.white}}
-          onPress={() => onToggle(id)}>
+          onPress={() => onToggle(id, !like)}>
           <MaterialIcon
             name={like ? 'cards-heart' : 'cards-heart-outline'}
             color={palette.red_1}
