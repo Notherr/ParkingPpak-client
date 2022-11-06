@@ -9,13 +9,13 @@ type LikeRequest = {
 export default function useLike() {
   return useMemo(
     () => ({
-      addLike: async (body: LikeRequest) => {
+      addLike: async ({type, dataId}: LikeRequest) => {
         try {
           const result = await baseAPI.post<void>(
             '/api/accounts/favorite-list/',
             {
-              type: body.type.replace('_', '-').toLocaleLowerCase(),
-              dataId: body.dataId,
+              type: type.replace('_', '-').toLocaleLowerCase(),
+              dataId: dataId,
             },
           );
           return result;
