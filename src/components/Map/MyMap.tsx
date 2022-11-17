@@ -1,7 +1,7 @@
 import React, {useRef, useState, useCallback, useEffect} from 'react';
 import {useQuery} from 'react-query';
 import {ActivityIndicator} from 'react-native';
-import MapView, {Region} from 'react-native-maps';
+import MapView, {AnimatedRegion} from 'react-native-maps';
 import {useRecoilValue, useRecoilState} from 'recoil';
 import {
   isShowBottomSheetState,
@@ -31,7 +31,7 @@ type GoogleMapProps = {
 };
 
 //scrollTo
-function GoogleMap({activeType, keyword}: GoogleMapProps) {
+function MyMap({activeType, keyword}: GoogleMapProps) {
   const isClickMarker = useRecoilValue(isClickMarkerState);
   const [isShowBottomSheet, setIsShowBottomSheet] = useRecoilState(
     isShowBottomSheetState,
@@ -124,75 +124,21 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
     console.log(keyword);
   }, [keyword]);
 
-  if (!region) {
-    return <ActivityIndicator />;
-  }
+  // if (!region) {
+  //   return <ActivityIndicator />;
+  // }
 
   return (
-    <>
-      <FlexView style={{position: 'relative'}}>
-        <CustomClusterMapView
-          ref={mapRef}
-          activeType={activeType}
-          initialRegion={region}
-          onRegionChangeComplete={onRegionChangeComplete}>
-          <CurrentLocationMarker latitude={latitude} longitude={longitude} />
-          <CenterMarker
-            isFetching={fetchingOilStations || fetchingParkingLots}
-            center={{
-              latitude: region.latitude,
-              longitude: region.longitude,
-            }}
-          />
-          {activeType === 'GAS_STATION' &&
-            oilStations?.map(oilStation => (
-              <CustomMarker
-                title={`${oilStation.gasolinePrice.toLocaleString()}원`}
-                logo={useGetOilStationBrandLogo(oilStation.compName)?.logo}
-                selected={marker?.info.id === oilStation.id}
-                key={oilStation.id}
-                zoom={zoom}
-                coordinate={{
-                  longitude: oilStation.lon,
-                  latitude: oilStation.lat,
-                }}
-                onPress={() => onPressMarker('GAS_STATION', oilStation)}
-              />
-            ))}
-          {activeType === 'PARKING_LOT' &&
-            parkingLots?.map(parking => (
-              <CustomMarker
-                title={`${
-                  parking.rates === 0
-                    ? '무료주차장'
-                    : `${parking.addTimeRates}분당 ${parking.rates}원`
-                }`}
-                selected={marker?.info.id === parking.id}
-                key={parking.id}
-                zoom={zoom}
-                coordinate={{
-                  longitude: parking.lon,
-                  latitude: parking.lat,
-                }}
-                onPress={() => onPressMarker('PARKING_LOT', parking)}
-              />
-            ))}
-        </CustomClusterMapView>
-      </FlexView>
-      {!isShowBottomSheet && (
-        <SearchButton
-          icon="refresh"
-          name="여기에서 재검색"
-          isFetching={fetchingOilStations || fetchingParkingLots}
-          onPress={onResearchOilStation}
-        />
-      )}
-      <MyLocationButton onPress={goMyLocation} />
-      <BottomSheet showBottomSheet={!!marker}>
-        {marker && <SelectMarkerCard marker={marker} />}
-      </BottomSheet>
-    </>
+    <MapView
+      initialRegion={{
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }}
+      onRegionChange={(region, details) => console.log(region, details)}
+    />
   );
 }
 
-export default GoogleMap;
+export default MyMap;

@@ -17,7 +17,6 @@ import {
   FlatList,
   useWindowDimensions,
 } from 'react-native';
-import GasStationDetail from './GasStationDetail';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 type DetailInfo = {
@@ -31,16 +30,13 @@ const INFO_LIST: DetailInfo[] = [
   {type: 'PHONE', content: '010-1234-5678'},
 ];
 
-export default function DetailScreen({
+export default function GasStationDetail({
   navigation,
   route,
-}: NativeStackScreenProps<
-  {params: {state: {id: number; type: ContentType}}},
-  'params'
->) {
+}: NativeStackScreenProps<any>) {
   const layout = useWindowDimensions();
   const {top} = useSafeAreaInsets();
-  console.log('======', route.params.state.type, route.params.state.id);
+  console.log(layout, top);
 
   const goBack = () => {
     navigation.pop();
@@ -95,7 +91,33 @@ export default function DetailScreen({
           </Pressable>
         </View>
       </View>
-      <GasStationDetail />
+      <View style={styles.content}>
+        <Text style={styles.title}>GS 칼텍스</Text>
+        <CustomButton text="길찾기" style={styles.navigateButton} />
+        <View style={styles.divideLine} />
+        <ToggleCard title="주요 정보" openOnMount>
+          {INFO_LIST.map(info => (
+            <View key={info.type} style={styles.infoItem}>
+              <MaterialCommunityIcons
+                name="clock-time-five-outline"
+                style={styles.infoIcon}
+                size={24}
+                color={palette.grey_4}
+              />
+              <Text style={styles.infoText}>{info.content}</Text>
+            </View>
+          ))}
+        </ToggleCard>
+        <View style={styles.divideLine} />
+        <ToggleCard title="위치 정보" openOnMount>
+          <View style={styles.positionWrapper}>
+            <Text style={styles.address}>서울특별시 동대문구 제기동</Text>
+            <View style={styles.map} />
+          </View>
+        </ToggleCard>
+        <View style={styles.divideLine} />
+        <ToggleCard title="주변 주차장 리스트" openOnMount></ToggleCard>
+      </View>
     </ScrollView>
   );
 }

@@ -1,4 +1,4 @@
-import {LatLng} from 'react-native-maps';
+export {};
 
 declare global {
   type GasStationType =

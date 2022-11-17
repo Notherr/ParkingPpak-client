@@ -158,7 +158,7 @@ export default function RegisterScreen() {
                 />
                 <CustomButton
                   disabled={!!errorResponse || !isValid}
-                  onPress={handleSubmit}
+                  onPress={() => handleSubmit()}
                   text="회원가입"
                 />
               </>

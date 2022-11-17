@@ -22,7 +22,7 @@ type RouteType = {
   title: string;
 };
 
-const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
+const ParkingRoute = ({navigation}: NativeStackScreenProps<any>) => {
   const [parkingLotList, setParkingLotList] = useState<ParkingLot[]>([]);
   const {getMyParkingLotList, removeLike, addLike} = useLike();
   useEffect(() => {
@@ -87,13 +87,14 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   );
 };
 
-const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
+const OilRoute = ({navigation}: NativeStackScreenProps<any>) => {
   const [gasStationList, setGasStationList] = useState<GasStation[]>([]);
   const {getMyGasStationList, addLike, removeLike} = useLike();
 
   useEffect(() => {
     getMyGasStationList().then(res => {
       if (res.data) {
+        console.log(res.data);
         setGasStationList(res.data);
       }
     });
@@ -157,8 +158,6 @@ const routes: RouteType[] = [
   {key: 'PARKING_LOT', title: '주차장'},
   {key: 'GAS_STATION', title: '주유소'},
 ];
-
-type ParamType = RouteProp<{params: {type?: ContentType}}, 'params'>;
 
 export default function LikeScreen({
   navigation,

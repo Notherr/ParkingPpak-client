@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface parkingTests : XCTestCase
+@interface parkingPpakTests : XCTestCase
 
 @end
 
-@implementation parkingTests
+@implementation parkingPpakTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

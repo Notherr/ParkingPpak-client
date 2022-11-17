@@ -2,7 +2,8 @@ import authStorage from '@/storages/authStorage';
 import {AxiosRequestConfig} from 'axios';
 import {APIService} from './apiService';
 
-const baseURL = 'http://3.34.193.83:80';
+// const baseURL = 'http://3.34.193.83:80';
+const baseURL = 'http://localhost:8080';
 
 const baseAPI = new APIService({
   baseURL: baseURL,

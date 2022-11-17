@@ -3,7 +3,6 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import ExploreScreen from './ExploreScreen';
 import MapScreen from './MapScreen';
 import ListScreen from './ListScreen';
 import DetailScreen from './DetailScreen';

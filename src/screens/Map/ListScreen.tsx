@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useGasStation} from 'recoil/actions';
+import {useContent} from 'recoil/actions';
 import {palette} from '@/constant';
 import {TabView, TabBar, SceneRendererProps} from 'react-native-tab-view';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
@@ -30,16 +30,22 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [parkingLotList, setParkingLotList] = useState<ParkingLot[]>([]);
   const {removeLike, addLike} = useLike();
 
-  const {getMapList} = useGasStation();
+  const {getMapList} = useContent();
+
+  const fetchList = async (searchAfter?: number) => {
+    return await getMapList(
+      `?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}${
+        searchAfter ? `&searchAfter=${searchAfter}` : ''
+      }`,
+    ).then(res => {
+      if (res.data) {
+        setParkingLotList(prev => [...prev, ...res.data]);
+      }
+    });
+  };
 
   useEffect(() => {
-    getMapList(`?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}`).then(
-      res => {
-        if (res.data) {
-          setParkingLotList(res.data);
-        }
-      },
-    );
+    fetchList();
   }, []);
 
   const onToggle = (id: number, like: boolean) => {
@@ -79,6 +85,10 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   return parkingLotList.length ? (
     <FlatList<ParkingLot>
       data={parkingLotList}
+      onEndReached={() => {
+        const searchAfter = parkingLotList[parkingLotList.length - 1].distance;
+        fetchList(searchAfter);
+      }}
       renderItem={({item}) => (
         <ParkingLotCard
           info={item}
@@ -87,7 +97,7 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
           onNavigate={onNavigate}
         />
       )}
-      keyExtractor={item => item.parkingName}
+      keyExtractor={item => `PARKING_LOT-${item.id}`}
     />
   ) : (
     <View style={styles.emptyBox}>
@@ -100,16 +110,22 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [gasStationList, setGasStationList] = useState<GasStation[]>([]);
   const {removeLike, addLike} = useLike();
 
-  const {getMapList} = useGasStation();
+  const {getMapList} = useContent();
+
+  const fetchList = async (searchAfter?: number) => {
+    return await getMapList(
+      `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}${
+        searchAfter ? `&searchAfter=${searchAfter}` : ''
+      }`,
+    ).then(res => {
+      if (res.data) {
+        setGasStationList(prev => [...prev, ...res.data]);
+      }
+    });
+  };
 
   useEffect(() => {
-    getMapList(`?type=gas_station&lat=${37.5666805}&lon=${126.9784147}`).then(
-      res => {
-        if (res.data) {
-          setGasStationList(res.data);
-        }
-      },
-    );
+    fetchList();
   }, []);
 
   const onToggle = (id: number, like: boolean) => {
@@ -149,6 +165,10 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   return gasStationList.length ? (
     <FlatList<GasStation>
       data={gasStationList}
+      onEndReached={() => {
+        const searchAfter = gasStationList[gasStationList.length - 1].distance;
+        fetchList(searchAfter);
+      }}
       renderItem={({item}) => (
         <GasStationCard
           info={item}
@@ -157,7 +177,7 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
           onToggle={onToggle}
         />
       )}
-      keyExtractor={item => item.name}
+      keyExtractor={item => `GAS_STATION-${item.name}`}
     />
   ) : (
     <View style={styles.emptyBox}>

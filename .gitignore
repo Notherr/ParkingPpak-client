@@ -67,3 +67,7 @@ vendor
 
 /ios/Pods/
 /vendor/bundle/
+
+# Ruby / CocoaPods
+/ios/Pods/
+/vendor/bundle/
