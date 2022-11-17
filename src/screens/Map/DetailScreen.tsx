@@ -1,35 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import ToggleCard from '@/components/Map/ToggleCard';
 import {palette} from '@/constant';
-import {CustomButton} from '@/components/common';
-import {
-  View,
-  ScrollView,
-  Pressable,
-  Text,
-  StyleSheet,
-  Platform,
-  ActivityIndicator,
-  FlatList,
-  useWindowDimensions,
-} from 'react-native';
+import {View, ScrollView, Pressable, StyleSheet, Platform} from 'react-native';
 import GasStationDetail from './GasStationDetail';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-
-type DetailInfo = {
-  type: 'PRICE' | 'TIME' | 'PHONE';
-  content: string;
-};
-
-const INFO_LIST: DetailInfo[] = [
-  {type: 'PRICE', content: '1L당 1,900원'},
-  {type: 'TIME', content: '08:00 ~ 24:00'},
-  {type: 'PHONE', content: '010-1234-5678'},
-];
+import ParkingLotDetail from './ParkingLotDetail';
 
 export default function DetailScreen({
   navigation,
@@ -38,10 +14,6 @@ export default function DetailScreen({
   {params: {state: {id: number; type: ContentType}}},
   'params'
 >) {
-  const layout = useWindowDimensions();
-  const {top} = useSafeAreaInsets();
-  console.log('======', route.params.state.type, route.params.state.id);
-
   const goBack = () => {
     navigation.pop();
   };
@@ -95,7 +67,11 @@ export default function DetailScreen({
           </Pressable>
         </View>
       </View>
-      <GasStationDetail />
+      {route.params.state.type === 'GAS_STATION' ? (
+        <GasStationDetail id={route.params.state.id} />
+      ) : (
+        <ParkingLotDetail id={route.params.state.id} />
+      )}
     </ScrollView>
   );
 }

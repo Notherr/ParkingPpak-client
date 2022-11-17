@@ -41,7 +41,7 @@ function MyMap({activeType, keyword}: GoogleMapProps) {
   const mapRef = useRef<MapView>(null);
   const {latitude, longitude} = useGetCurrentPosition();
 
-  const {getMapList} = useContent();
+  const {getContentList} = useContent();
 
   const [region, setRegion] = useState<Region>({
     latitude: 37.564362,
@@ -71,7 +71,7 @@ function MyMap({activeType, keyword}: GoogleMapProps) {
   } = useQuery(
     ['oilStation'],
     async () => {
-      const response = await getMapList(
+      const response = await getContentList(
         `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}`,
       );
       return response.data.map((oilStation: GasStation) => {
@@ -91,7 +91,7 @@ function MyMap({activeType, keyword}: GoogleMapProps) {
   } = useQuery(
     ['parkingLot'],
     async () => {
-      const response = await getMapList(
+      const response = await getContentList(
         `?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}`,
       );
       return response.data.map((parkingLot: ParkingLot) => {

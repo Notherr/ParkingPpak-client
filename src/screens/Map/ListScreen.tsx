@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useContent} from 'recoil/actions';
 import {palette} from '@/constant';
 import {TabView, TabBar, SceneRendererProps} from 'react-native-tab-view';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {
   View,
   Pressable,
@@ -30,10 +28,10 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [parkingLotList, setParkingLotList] = useState<ParkingLot[]>([]);
   const {removeLike, addLike} = useLike();
 
-  const {getMapList} = useContent();
+  const {getContentList} = useContent();
 
   const fetchList = async (searchAfter?: number) => {
-    return await getMapList(
+    return await getContentList(
       `?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}${
         searchAfter ? `&searchAfter=${searchAfter}` : ''
       }`,
@@ -110,10 +108,10 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [gasStationList, setGasStationList] = useState<GasStation[]>([]);
   const {removeLike, addLike} = useLike();
 
-  const {getMapList} = useContent();
+  const {getContentList} = useContent();
 
   const fetchList = async (searchAfter?: number) => {
-    return await getMapList(
+    return await getContentList(
       `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}${
         searchAfter ? `&searchAfter=${searchAfter}` : ''
       }`,
