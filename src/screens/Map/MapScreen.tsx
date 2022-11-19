@@ -4,7 +4,7 @@ import {SearchBox, Switch, GoogleMap, MapTypeConverter} from 'components/Map';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 function MapScreen({navigation, route}: NativeStackScreenProps<any>) {
-  const [activeType, setActiveType] = useState<ContentType>('PARKING_LOT');
+  const [activeType, setActiveType] = useState<ContentType>('GAS_STATION');
   const [keyword, setKeyword] = useState<string>();
 
   const toggleSwitch = (type: ContentType) => setActiveType(type);
@@ -16,8 +16,8 @@ function MapScreen({navigation, route}: NativeStackScreenProps<any>) {
       <MapTypeConverter navigation={navigation} route={route} />
       <Switch<ContentType>
         options={[
-          {label: '주차장', value: 'PARKING_LOT'},
           {label: '주유소', value: 'GAS_STATION'},
+          {label: '주차장', value: 'PARKING_LOT'},
         ]}
         value={activeType}
         onToggle={toggleSwitch}

@@ -18,6 +18,7 @@ import {
 import GasStationCard from '@/components/Setting/GasStationCard';
 import useLike from '@/recoil/actions/useLike';
 import ParkingLotCard from '@/components/Setting/ParkingLotCard';
+import {useMutation, useQueryClient} from 'react-query';
 
 type RouteType = {
   key: ContentType;
@@ -28,7 +29,39 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [parkingLotList, setParkingLotList] = useState<ParkingLot[]>([]);
   const {removeLike, addLike} = useLike();
 
+  const queryClient = useQueryClient();
+
   const {getContentList} = useContent();
+
+  const addLikeMutation = useMutation({
+    mutationFn: addLike,
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(['like-list', 'parking-lot']);
+      setParkingLotList(props =>
+        props.map(lot => {
+          if (lot.id === variables.dataId) {
+            return {...lot, like: true};
+          }
+          return lot;
+        }),
+      );
+    },
+  });
+
+  const removeLikeMutation = useMutation({
+    mutationFn: removeLike,
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(['like-list', 'parking-lot']);
+      setParkingLotList(props =>
+        props.map(lot => {
+          if (lot.id === variables.dataId) {
+            return {...lot, like: false};
+          }
+          return lot;
+        }),
+      );
+    },
+  });
 
   const fetchList = async (searchAfter?: number) => {
     return await getContentList(
@@ -48,27 +81,9 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
 
   const onToggle = (id: number, like: boolean) => {
     if (like) {
-      addLike({dataId: id, type: 'PARKING_LOT'}).then(() => {
-        setParkingLotList(props =>
-          props.map(lot => {
-            if (lot.id === id) {
-              return {...lot, like: true};
-            }
-            return lot;
-          }),
-        );
-      });
+      addLikeMutation.mutate({dataId: id, type: 'PARKING_LOT'});
     } else {
-      removeLike({dataId: id, type: 'PARKING_LOT'}).then(() => {
-        setParkingLotList(props =>
-          props.map(lot => {
-            if (lot.id === id) {
-              return {...lot, like: false};
-            }
-            return lot;
-          }),
-        );
-      });
+      removeLikeMutation.mutate({dataId: id, type: 'PARKING_LOT'});
     }
   };
 
@@ -108,6 +123,8 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const [gasStationList, setGasStationList] = useState<GasStation[]>([]);
   const {removeLike, addLike} = useLike();
 
+  const queryClient = useQueryClient();
+
   const {getContentList} = useContent();
 
   const fetchList = async (searchAfter?: number) => {
@@ -122,33 +139,45 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     });
   };
 
+  const addLikeMutation = useMutation({
+    mutationFn: addLike,
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(['like-list', 'gas-station']);
+      setGasStationList(props =>
+        props.map(lot => {
+          if (lot.id === variables.dataId) {
+            return {...lot, like: true};
+          }
+          return lot;
+        }),
+      );
+    },
+  });
+
+  const removeLikeMutation = useMutation({
+    mutationFn: removeLike,
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(['like-list', 'gas-station']);
+      setGasStationList(props =>
+        props.map(lot => {
+          if (lot.id === variables.dataId) {
+            return {...lot, like: false};
+          }
+          return lot;
+        }),
+      );
+    },
+  });
+
   useEffect(() => {
     fetchList();
   }, []);
 
   const onToggle = (id: number, like: boolean) => {
     if (like) {
-      addLike({dataId: id, type: 'GAS_STATION'}).then(() => {
-        setGasStationList(props =>
-          props.map(gas => {
-            if (gas.id === id) {
-              return {...gas, like: true};
-            }
-            return gas;
-          }),
-        );
-      });
+      addLikeMutation.mutate({dataId: id, type: 'GAS_STATION'});
     } else {
-      removeLike({dataId: id, type: 'GAS_STATION'}).then(() => {
-        setGasStationList(props =>
-          props.map(gas => {
-            if (gas.id === id) {
-              return {...gas, like: false};
-            }
-            return gas;
-          }),
-        );
-      });
+      removeLikeMutation.mutate({dataId: id, type: 'GAS_STATION'});
     }
   };
 
@@ -207,7 +236,7 @@ export default function ListScreen({
     }
   };
 
-  const [index, setIndex] = React.useState<number>(1);
+  const [index, setIndex] = React.useState<number>(0);
   const layout = useWindowDimensions();
   const [input, setInput] = useState<string>();
 
@@ -216,8 +245,8 @@ export default function ListScreen({
   };
 
   const routes: RouteType[] = [
-    {key: 'PARKING_LOT', title: '주차장'},
     {key: 'GAS_STATION', title: '주유소'},
+    {key: 'PARKING_LOT', title: '주차장'},
   ];
 
   return (
