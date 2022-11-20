@@ -57,7 +57,10 @@ const ParkingRoute = ({navigation}: NativeStackScreenProps<any>) => {
   };
 
   const onClickItem = (id: number) => {
-    navigation.navigate('DetailPage', {state: {type: 'PARKING_LOT', id}});
+    navigation.navigate('Map', {
+      screen: 'DetailPage',
+      params: {state: {type: 'PARKING_LOT', id}},
+    });
   };
 
   if (isLoading) {
@@ -121,7 +124,10 @@ const OilRoute = ({navigation}: NativeStackScreenProps<any>) => {
   };
 
   const onClickItem = (id: number) => {
-    navigation.navigate('DetailPage', {state: {type: 'GAS_STATION', id}});
+    navigation.navigate('Map', {
+      screen: 'DetailPage',
+      params: {state: {type: 'GAS_STATION', id}},
+    });
   };
 
   if (isLoading) {
