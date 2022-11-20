@@ -13,6 +13,9 @@ import {
   StyleSheet,
   ActivityIndicator,
   Dimensions,
+  ScrollView,
+  Pressable,
+  Platform,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import {CurrentLocationMarker} from '@/components/Map';
@@ -46,7 +49,13 @@ type DetailParkingLot = {
   weekendEnd: string;
 };
 
-export default function ParkingLotDetail({id}: {id: number}) {
+export default function ParkingLotDetail({
+  id,
+  goBack,
+}: {
+  id: number;
+  goBack: () => void;
+}) {
   const {getDetailContent} = useContent();
   const {isLoading, data} = useQuery(['content', 'PARKING_LOT', id], () =>
     getDetailContent(`?type=parking_lot&id=${id}`),
@@ -210,53 +219,130 @@ export default function ParkingLotDetail({id}: {id: number}) {
   ];
 
   return (
-    <View>
-      <View style={styles.titleWrapper}>
-        <Text style={styles.title}>{parkingName}</Text>
-        <Text style={styles.syncDate}>
-          데이터 동기화 날짜: {modificationDate.split('T')[0]}
-        </Text>
-      </View>
-      <CustomButton text="길찾기" style={styles.navigateButton} />
-      <View style={styles.divideLine} />
-      <ToggleCard title="주요 정보" openOnMount>
-        {INFO_LIST.map((info, index) => (
-          <View key={`${info.content}-${index}`} style={styles.infoItem}>
-            {info.icon}
-            <Text style={styles.infoText}>{info.content}</Text>
-          </View>
-        ))}
-      </ToggleCard>
-      <View style={styles.divideLine} />
-      <ToggleCard title="위치 정보" openOnMount>
-        <View style={styles.positionWrapper}>
-          <Text style={styles.address}>{address}</Text>
-          <BorderView
-            height={150}
-            borderRadius={4}
-            style={styles.map}
-            borderColor={'#ddd'}>
-            <MapView
-              ref={mapRef}
-              style={styles.map}
-              initialRegion={{
-                latitude: xcoor,
-                longitude: ycoor,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}>
-              <CurrentLocationMarker latitude={xcoor} longitude={ycoor} />
-            </MapView>
-          </BorderView>
+    <ScrollView
+      style={styles.block}
+      contentContainerStyle={{paddingBottom: 100}}>
+      <View style={[styles.header]}>
+        <Pressable
+          style={({pressed}) => [
+            styles.back,
+            Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
+          ]}
+          android_ripple={{color: palette.white}}
+          onPress={goBack}>
+          <Icon name="arrow-back" size={24} style={styles.icon} />
+        </Pressable>
+        <View style={styles.iconWrapper}>
+          <Pressable
+            style={({pressed}) => [
+              styles.headerIcon,
+              Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
+            ]}
+            android_ripple={{color: palette.white}}
+            onPress={goBack}>
+            <Icon name="edit" size={18} style={styles.icon} />
+          </Pressable>
+          <Pressable
+            style={({pressed}) => [
+              styles.headerIcon,
+              Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
+            ]}
+            android_ripple={{color: palette.white}}
+            onPress={goBack}>
+            <Icon name="share" size={18} style={styles.icon} />
+          </Pressable>
+          <Pressable
+            style={({pressed}) => [
+              styles.headerIcon,
+              Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
+            ]}
+            android_ripple={{color: palette.white}}
+            onPress={goBack}>
+            <MaterialIcon
+              // name={like ? 'cards-heart' : 'cards-heart-outline'}
+              name={'cards-heart'}
+              color={palette.red_1}
+              size={18}
+            />
+          </Pressable>
         </View>
-      </ToggleCard>
-      <View style={styles.divideLine} />
-      <ToggleCard title="주변 주차장 리스트" openOnMount></ToggleCard>
-    </View>
+      </View>
+      <View>
+        <View style={styles.titleWrapper}>
+          <Text style={styles.title}>{parkingName}</Text>
+          <Text style={styles.syncDate}>
+            데이터 동기화 날짜: {modificationDate.split('T')[0]}
+          </Text>
+        </View>
+        <CustomButton text="길찾기" style={styles.navigateButton} />
+        <View style={styles.divideLine} />
+        <ToggleCard title="주요 정보" openOnMount>
+          {INFO_LIST.map((info, index) => (
+            <View key={`${info.content}-${index}`} style={styles.infoItem}>
+              {info.icon}
+              <Text style={styles.infoText}>{info.content}</Text>
+            </View>
+          ))}
+        </ToggleCard>
+        <View style={styles.divideLine} />
+        <ToggleCard title="위치 정보" openOnMount>
+          <View style={styles.positionWrapper}>
+            <Text style={styles.address}>{address}</Text>
+            <BorderView
+              height={150}
+              borderRadius={4}
+              style={styles.map}
+              borderColor={'#ddd'}>
+              <MapView
+                ref={mapRef}
+                style={styles.map}
+                initialRegion={{
+                  latitude: xcoor,
+                  longitude: ycoor,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}>
+                <CurrentLocationMarker latitude={xcoor} longitude={ycoor} />
+              </MapView>
+            </BorderView>
+          </View>
+        </ToggleCard>
+        <View style={styles.divideLine} />
+        <ToggleCard title="주변 주차장 리스트" openOnMount></ToggleCard>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  block: {flex: 1, backgroundColor: palette.white},
+  header: {
+    flexDirection: 'row',
+    backgroundColor: palette.white,
+    marginTop: 50, // 수정필요
+    paddingHorizontal: 20,
+    justifyContent: 'space-between',
+  },
+  iconWrapper: {flexDirection: 'row'},
+  inputWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    borderRadius: 4,
+    alignItems: 'center',
+    backgroundColor: palette.grey_7,
+    paddingHorizontal: 10,
+    shadowColor: '#8B8B8B',
+  },
+  back: {
+    justifyContent: 'center',
+  },
+  headerIcon: {
+    marginLeft: 16,
+  },
+  icon: {
+    color: palette.grey_3,
+  },
+  content: {},
   titleWrapper: {
     alignItems: 'center',
     marginVertical: 24,
