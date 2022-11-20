@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useQuery} from 'react-query';
@@ -6,9 +6,17 @@ import {useContent} from 'recoil/actions';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ToggleCard from '@/components/Map/ToggleCard';
 import {palette} from '@/constant';
-import {CustomButton} from '@/components/common';
-import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {BorderView, CustomButton} from '@/components/common';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  Dimensions,
+} from 'react-native';
 import {useGetOilStationBrandLogo} from '@/hooks';
+import MapView from 'react-native-maps';
+import {CurrentLocationMarker} from '@/components/Map';
 
 type DetailInfo = {
   content: string;
@@ -21,10 +29,30 @@ export default function GasStationDetail({id}: {id: number}) {
     getDetailContent(`?type=gas_station&id=${id}`),
   );
 
+  const mapRef = useRef<MapView | null>(null);
+
+  const getRegionForZoom = (lat: number, lon: number, zoom: number) => {
+    const distanceDelta = Math.exp(Math.log(360) - zoom * Math.LN2);
+    const {width, height} = Dimensions.get('window');
+    const aspectRatio = width / height;
+    return {
+      latitude: lat,
+      longitude: lon,
+      latitudeDelta: distanceDelta * aspectRatio,
+      longitudeDelta: distanceDelta,
+    };
+  };
+
+  useEffect(() => {
+    if (data) {
+      const {lat, lon} = data as GasStation;
+      mapRef.current?.animateToRegion(getRegionForZoom(lat, lon, 15));
+    }
+  }, [data]);
+
   if (isLoading) {
     return <ActivityIndicator />;
   }
-
   const {
     compName,
     name,
@@ -37,6 +65,7 @@ export default function GasStationDetail({id}: {id: number}) {
     cvsExist,
     tel,
   } = data as GasStation;
+
   const {logo} = useGetOilStationBrandLogo(compName);
 
   const INFO_LIST: DetailInfo[] = [
@@ -96,7 +125,6 @@ export default function GasStationDetail({id}: {id: number}) {
       ),
     },
   ];
-
   return (
     <View>
       <View style={styles.titleWrapper}>
@@ -117,10 +145,23 @@ export default function GasStationDetail({id}: {id: number}) {
       <ToggleCard title="위치 정보" openOnMount>
         <View style={styles.positionWrapper}>
           <Text style={styles.address}>{address}</Text>
-          <Text>
-            {lon} {lat}
-          </Text>
-          <View style={styles.map} />
+          <BorderView
+            height={150}
+            borderRadius={4}
+            style={styles.map}
+            borderColor={'#ddd'}>
+            <MapView
+              ref={mapRef}
+              style={styles.map}
+              initialRegion={{
+                latitude: lat,
+                longitude: lon,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}>
+              <CurrentLocationMarker latitude={lat} longitude={lon} />
+            </MapView>
+          </BorderView>
         </View>
       </ToggleCard>
       <View style={styles.divideLine} />
@@ -163,7 +204,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     marginBottom: 24,
   },
-  map: {width: '80%', backgroundColor: 'red', height: 300, alignSelf: 'center'},
+  map: {width: '100%', height: 300, alignSelf: 'center'},
   navigateButton: {
     width: '60%',
     alignSelf: 'center',
