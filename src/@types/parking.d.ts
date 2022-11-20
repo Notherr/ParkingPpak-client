@@ -19,6 +19,6 @@ declare global {
     weekdayEnd: string;
     weekendBegin: string;
     weekendEnd: string;
-    like: boolean;
+    isFavorite: boolean;
   };
 }

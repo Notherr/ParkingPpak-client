@@ -27,6 +27,6 @@ declare global {
     cvsExist: boolean;
     tel: string;
     distance: number;
-    like: boolean;
+    isFavorite: boolean;
   };
 }

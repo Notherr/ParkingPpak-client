@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 import {
   PanGestureHandler,
@@ -36,10 +36,32 @@ export default function BottomSheet({
   const [isMaxHeight, setIsMaxHeight] = useRecoilState(
     isBottomSheetMaxHeightState,
   );
+
+  const onResizeFinished = (yPosition: number) => {
+    if (yPosition < MAX_TRANSLATE_Y + DEFAULT_SHOW_SCREEN_HEIGHT * -1) {
+      setIsMaxHeight(true);
+      setIsShowBottomSheet(true);
+    } else if (
+      yPosition < DEFAULT_SHOW_SCREEN_HEIGHT + 20 &&
+      yPosition >= MAX_TRANSLATE_Y + DEFAULT_SHOW_SCREEN_HEIGHT * -1
+    ) {
+      // 작게 보일때
+      setIsMaxHeight(false);
+      setIsShowBottomSheet(true);
+    } else {
+      setIsShowBottomSheet(false);
+      setIsMaxHeight(false);
+      selectedInfo(undefined);
+    }
+  };
+
   const gestureHandler = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     {translateY: number}
   >({
+    onFinish: () => {
+      runOnJS(onResizeFinished)(translateY.value);
+    },
     onStart: (_, ctx) => {
       ctx.translateY = translateY.value;
     },
@@ -50,19 +72,21 @@ export default function BottomSheet({
       );
     },
     onEnd: () => {
-      if (translateY.value > MAX_TRANSLATE_Y + 50 && isMaxHeight) {
-        scrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
-        setIsMaxHeight(false);
-      } else if (translateY.value < DEFAULT_SHOW_SCREEN_HEIGHT) {
-        scrollTo(MAX_TRANSLATE_Y);
-        // setIsMaxHeight(true);
-      } else if (
-        translateY.value > DEFAULT_SHOW_SCREEN_HEIGHT &&
-        !isMaxHeight
+      if (
+        translateY.value <
+        MAX_TRANSLATE_Y + DEFAULT_SHOW_SCREEN_HEIGHT * -1
       ) {
+        // 가장 큰 사이즈로 보여짐
+        scrollTo(MAX_TRANSLATE_Y);
+      } else if (
+        translateY.value < DEFAULT_SHOW_SCREEN_HEIGHT + 20 &&
+        translateY.value >= MAX_TRANSLATE_Y + DEFAULT_SHOW_SCREEN_HEIGHT * -1
+      ) {
+        // 중간 사이즈로 보여짐
+        scrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
+      } else {
+        // 아예 안보임
         scrollTo(0);
-        // setIsShowBottomSheet(false);
-        // selectedInfo(undefined);
       }
     },
   });

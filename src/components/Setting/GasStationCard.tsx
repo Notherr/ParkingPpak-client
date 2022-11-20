@@ -18,7 +18,8 @@ export default function GasStationCard({
   onNavigate,
   onToggle,
 }: GasStationCardProps) {
-  const {id, name, compName, dieselPrice, gasolinePrice, lat, lon, like} = info;
+  const {id, name, compName, dieselPrice, gasolinePrice, lat, lon, isFavorite} =
+    info;
   const {logo} = useGetOilStationBrandLogo(compName);
   return (
     <Pressable style={styles.press} onPress={() => onClickItem(id)}>
@@ -43,9 +44,9 @@ export default function GasStationCard({
             Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
           ]}
           android_ripple={{color: palette.white}}
-          onPress={() => onToggle(id, !like)}>
+          onPress={() => onToggle(id, !isFavorite)}>
           <MaterialIcon
-            name={like ? 'cards-heart' : 'cards-heart-outline'}
+            name={isFavorite ? 'cards-heart' : 'cards-heart-outline'}
             color={palette.red_1}
             size={20}
           />

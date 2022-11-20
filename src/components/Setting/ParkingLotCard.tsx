@@ -17,8 +17,17 @@ export default function ParkingLotCard({
   onNavigate,
   onToggle,
 }: ParkingLotCardProps) {
-  const {parkingName, id, lat, lon, payYN, rates, timeRates, addRates, like} =
-    info;
+  const {
+    parkingName,
+    id,
+    lat,
+    lon,
+    payYN,
+    rates,
+    timeRates,
+    addRates,
+    isFavorite,
+  } = info;
 
   return (
     <Pressable style={styles.press} onPress={() => onClickItem(id)}>
@@ -37,9 +46,9 @@ export default function ParkingLotCard({
             Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
           ]}
           android_ripple={{color: palette.white}}
-          onPress={() => onToggle(id, !like)}>
+          onPress={() => onToggle(id, !isFavorite)}>
           <MaterialIcon
-            name={like ? 'cards-heart' : 'cards-heart-outline'}
+            name={isFavorite ? 'cards-heart' : 'cards-heart-outline'}
             color={palette.red_1}
             size={20}
           />

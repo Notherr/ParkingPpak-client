@@ -204,7 +204,7 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
           onToggle={onToggle}
         />
       )}
-      keyExtractor={item => `GAS_STATION-${item.name}`}
+      keyExtractor={item => `GAS_STATION-${item.name}-${item.id}`}
     />
   ) : (
     <View style={styles.emptyBox}>
