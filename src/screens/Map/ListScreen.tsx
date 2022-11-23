@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useIsFocused} from '@react-navigation/native';
 import {useContent} from 'recoil/actions';
 import {palette} from '@/constant';
 import {TabView, TabBar, SceneRendererProps} from 'react-native-tab-view';
@@ -37,10 +38,11 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     mutationFn: addLike,
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(['like-list', 'parking-lot']);
+
       setParkingLotList(props =>
         props.map(lot => {
           if (lot.id === variables.dataId) {
-            return {...lot, like: true};
+            return {...lot, isFavorite: true};
           }
           return lot;
         }),
@@ -52,10 +54,11 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     mutationFn: removeLike,
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(['like-list', 'parking-lot']);
+
       setParkingLotList(props =>
         props.map(lot => {
           if (lot.id === variables.dataId) {
-            return {...lot, like: false};
+            return {...lot, isFavorite: false};
           }
           return lot;
         }),
@@ -75,9 +78,14 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     });
   };
 
+  const isPageFocused = useIsFocused();
+
   useEffect(() => {
-    fetchList();
-  }, []);
+    if (isPageFocused) {
+      fetchList();
+    }
+    return () => setParkingLotList([]);
+  }, [isPageFocused]);
 
   const onToggle = (id: number, like: boolean) => {
     if (like) {
@@ -146,7 +154,7 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
       setGasStationList(props =>
         props.map(lot => {
           if (lot.id === variables.dataId) {
-            return {...lot, like: true};
+            return {...lot, isFavorite: true};
           }
           return lot;
         }),
@@ -161,7 +169,7 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
       setGasStationList(props =>
         props.map(lot => {
           if (lot.id === variables.dataId) {
-            return {...lot, like: false};
+            return {...lot, isFavorite: false};
           }
           return lot;
         }),
@@ -169,9 +177,13 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     },
   });
 
+  const isPageFocused = useIsFocused();
   useEffect(() => {
-    fetchList();
-  }, []);
+    if (isPageFocused) {
+      fetchList();
+    }
+    return () => setGasStationList([]);
+  }, [isPageFocused]);
 
   const onToggle = (id: number, like: boolean) => {
     if (like) {

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useQuery} from 'react-query';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {useContent} from 'recoil/actions';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ToggleCard from '@/components/Map/ToggleCard';
@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import {CurrentLocationMarker} from '@/components/Map';
+import useLike from '@/recoil/actions/useLike';
 
 type DetailInfo = {
   content: string;
@@ -47,6 +48,7 @@ type DetailParkingLot = {
   weekdayEnd: string;
   weekendBegin: string;
   weekendEnd: string;
+  isFavorite: boolean;
 };
 
 export default function ParkingLotDetail({
@@ -57,9 +59,13 @@ export default function ParkingLotDetail({
   goBack: () => void;
 }) {
   const {getDetailContent} = useContent();
-  const {isLoading, data} = useQuery(['content', 'PARKING_LOT', id], () =>
-    getDetailContent(`?type=parking_lot&id=${id}`),
+  const {removeLike, addLike} = useLike();
+
+  const {isLoading, data} = useQuery(
+    ['content-detail', 'parking-lot', id],
+    () => getDetailContent(`?type=parking_lot&id=${id}`),
   );
+  const queryClient = useQueryClient();
 
   const mapRef = useRef<MapView | null>(null);
 
@@ -75,6 +81,22 @@ export default function ParkingLotDetail({
     };
   };
 
+  const addLikeMutation = useMutation({
+    mutationFn: addLike,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['like-list', 'parking-lot']);
+      queryClient.invalidateQueries(['content-detail', 'parking-lot', id]);
+    },
+  });
+
+  const removeLikeMutation = useMutation({
+    mutationFn: removeLike,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['like-list', 'parking-lot']);
+      queryClient.invalidateQueries(['content-detail', 'parking-lot', id]);
+    },
+  });
+
   useEffect(() => {
     if (data) {
       console.log(data);
@@ -82,6 +104,14 @@ export default function ParkingLotDetail({
       mapRef.current?.animateToRegion(getRegionForZoom(xcoor, ycoor, 15));
     }
   }, [data]);
+
+  const onToggle = (id: number, like: boolean) => {
+    if (like) {
+      addLikeMutation.mutate({dataId: id, type: 'PARKING_LOT'});
+    } else {
+      removeLikeMutation.mutate({dataId: id, type: 'PARKING_LOT'});
+    }
+  };
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -103,6 +133,7 @@ export default function ParkingLotDetail({
     rates,
     syncTime,
     timeRates,
+    isFavorite,
     type,
     weekdayBegin,
     weekdayEnd,
@@ -257,10 +288,11 @@ export default function ParkingLotDetail({
               Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
             ]}
             android_ripple={{color: palette.white}}
-            onPress={goBack}>
+            onPress={() => {
+              onToggle(id, !isFavorite);
+            }}>
             <MaterialIcon
-              // name={like ? 'cards-heart' : 'cards-heart-outline'}
-              name={'cards-heart'}
+              name={isFavorite ? 'cards-heart' : 'cards-heart-outline'}
               color={palette.red_1}
               size={18}
             />

@@ -23,24 +23,24 @@ type RouteType = {
 
 const ParkingRoute = ({navigation}: NativeStackScreenProps<any>) => {
   const {getMyParkingLotList, removeLike, addLike} = useLike();
-  const queryClient = useQueryClient();
 
-  const {data: parkingData, isLoading} = useQuery(
-    ['like-list', 'parking-lot'],
-    getMyParkingLotList,
-  );
+  const {
+    data: parkingData,
+    isLoading,
+    refetch,
+  } = useQuery(['like-list', 'parking-lot'], getMyParkingLotList);
 
   const addLikeMutation = useMutation({
     mutationFn: addLike,
     onSuccess: () => {
-      queryClient.invalidateQueries(['like-list', 'parking-lot']);
+      refetch();
     },
   });
 
   const removeLikeMutation = useMutation({
     mutationFn: removeLike,
     onSuccess: () => {
-      queryClient.invalidateQueries(['like-list', 'parking-lot']);
+      refetch();
     },
   });
 

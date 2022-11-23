@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useQuery} from 'react-query';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {useContent} from 'recoil/actions';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ToggleCard from '@/components/Map/ToggleCard';
@@ -20,6 +20,7 @@ import {
 import {useGetOilStationBrandLogo} from '@/hooks';
 import MapView from 'react-native-maps';
 import {CurrentLocationMarker} from '@/components/Map';
+import useLike from '@/recoil/actions/useLike';
 
 type DetailInfo = {
   content: string;
@@ -34,8 +35,13 @@ export default function GasStationDetail({
   goBack: () => void;
 }) {
   const {getDetailContent} = useContent();
-  const {isLoading, data} = useQuery(['content', 'GAS_STATION', id], () =>
-    getDetailContent(`?type=gas_station&id=${id}`),
+
+  const {removeLike, addLike} = useLike();
+  const queryClient = useQueryClient();
+
+  const {isLoading, data} = useQuery(
+    ['content-detail', 'gas-station', id],
+    () => getDetailContent(`?type=gas_station&id=${id}`),
   );
 
   const mapRef = useRef<MapView | null>(null);
@@ -52,12 +58,36 @@ export default function GasStationDetail({
     };
   };
 
+  const addLikeMutation = useMutation({
+    mutationFn: addLike,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['like-list', 'gas-station']);
+      queryClient.invalidateQueries(['content-detail', 'gas-station', id]);
+    },
+  });
+
+  const removeLikeMutation = useMutation({
+    mutationFn: removeLike,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['like-list', 'gas-station']);
+      queryClient.invalidateQueries(['content-detail', 'gas-station', id]);
+    },
+  });
+
   useEffect(() => {
     if (data) {
       const {lat, lon} = data as GasStation;
       mapRef.current?.animateToRegion(getRegionForZoom(lat, lon, 15));
     }
   }, [data]);
+
+  const onToggle = (id: number, like: boolean) => {
+    if (like) {
+      addLikeMutation.mutate({dataId: id, type: 'GAS_STATION'});
+    } else {
+      removeLikeMutation.mutate({dataId: id, type: 'GAS_STATION'});
+    }
+  };
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -71,6 +101,7 @@ export default function GasStationDetail({
     gasolinePrice,
     dieselPrice,
     carWash,
+    isFavorite,
     cvsExist,
     tel,
   } = data as GasStation;
@@ -174,10 +205,11 @@ export default function GasStationDetail({
               Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
             ]}
             android_ripple={{color: palette.white}}
-            onPress={goBack}>
+            onPress={() => {
+              onToggle(id, !isFavorite);
+            }}>
             <MaterialIcon
-              // name={like ? 'cards-heart' : 'cards-heart-outline'}
-              name={'cards-heart'}
+              name={isFavorite ? 'cards-heart' : 'cards-heart-outline'}
               color={palette.red_1}
               size={18}
             />
