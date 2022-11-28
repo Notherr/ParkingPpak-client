@@ -1,10 +1,10 @@
-import React, {ReactNode, useEffect, useState} from 'react';
+import React, {ReactNode} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
 } from 'react-native-gesture-handler';
-import {useScrollBottomSheet} from 'hooks';
+import {useScrollBottomSheet, useCalculateBottomSheetHeight} from 'hooks';
 import Animated, {
   useAnimatedStyle,
   useAnimatedGestureHandler,
@@ -26,10 +26,11 @@ export default function BottomSheet({
   children,
 }: {
   showBottomSheet: boolean;
-  children: ReactNode;
+  children: (onScrollTo: (yPosition: number) => void) => ReactNode;
 }) {
-  const {scrollTo, translateY, DEFAULT_SHOW_SCREEN_HEIGHT, MAX_TRANSLATE_Y} =
-    useScrollBottomSheet(showBottomSheet);
+  const {scrollTo, translateY} = useScrollBottomSheet(showBottomSheet);
+  const {DEFAULT_SHOW_SCREEN_HEIGHT, MAX_TRANSLATE_Y} =
+    useCalculateBottomSheetHeight();
 
   const setIsShowBottomSheet = useSetRecoilState(isShowBottomSheetState);
   const selectedInfo = useSetRecoilState(selectedInfoState);
@@ -108,7 +109,7 @@ export default function BottomSheet({
     <PanGestureHandler onGestureEvent={gestureHandler}>
       <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]}>
         <View style={styles.line} />
-        {children}
+        {children(scrollTo)}
       </Animated.View>
     </PanGestureHandler>
   );

@@ -1,11 +1,9 @@
-import {useCallback, useEffect} from 'react';
-import {Dimensions} from 'react-native';
+import {useEffect} from 'react';
+import useCalculateBottomSheetHeight from './useCalculateBottomSheetHeight';
 import {useSharedValue, withSpring} from 'react-native-reanimated';
 
 function useScrollBottomSheet(showBottomSheet: boolean) {
-  const {height: SCREEN_HEIGHT} = Dimensions.get('window');
-  const MAX_TRANSLATE_Y = -SCREEN_HEIGHT;
-  const DEFAULT_SHOW_SCREEN_HEIGHT = MAX_TRANSLATE_Y / 4;
+  const {DEFAULT_SHOW_SCREEN_HEIGHT} = useCalculateBottomSheetHeight();
 
   // Y position
   const translateY = useSharedValue(0);
@@ -24,11 +22,8 @@ function useScrollBottomSheet(showBottomSheet: boolean) {
   }, [showBottomSheet]);
 
   return {
-    MAX_TRANSLATE_Y,
-    DEFAULT_SHOW_SCREEN_HEIGHT,
     translateY,
     scrollTo,
-    SCREEN_HEIGHT,
   };
 }
 

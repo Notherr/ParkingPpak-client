@@ -1,35 +1,23 @@
-import React, {useRef, useEffect, useState} from 'react';
-import MapView from 'react-native-maps';
-import {useRecoilValue} from 'recoil';
-import Icons from 'react-native-vector-icons/MaterialIcons';
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Pressable,
-  Platform,
-  Text,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {useRecoilState, useSetRecoilState} from 'recoil';
+import {View, StyleSheet, Pressable, Platform} from 'react-native';
 import {palette} from '@/constant';
-import {useGetOilStationBrandLogo} from 'hooks';
+import {useCalculateBottomSheetHeight, useGetOilStationBrandLogo} from 'hooks';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {isBottomSheetMaxHeightState} from '@/recoil/atoms';
 import {
-  SizedView,
-  FlexView,
-  TextComponent,
-  CustomButton,
-  BorderView,
-  Loading,
-} from 'components/common';
-import {CurrentLocationMarker} from 'components/Map';
-import {useNavigation} from '@react-navigation/native';
+  isBottomSheetMaxHeightState,
+  isShowBottomSheetState,
+} from '@/recoil/atoms';
+import {SizedView, FlexView, TextComponent, Loading} from 'components/common';
+import ParkingLotDetail from '@/screens/Map/ParkingLotDetail';
+import GasStationDetail from '@/screens/Map/GasStationDetail';
 
 type SelectMarkerCardType = {
   marker: GasStationWrapper | ParkingLotWrapper;
+  onScrollTo: (yPosition: number) => void;
 };
 
-function SelectMarkerCard({marker}: SelectMarkerCardType) {
+function SelectMarkerCard({marker, onScrollTo}: SelectMarkerCardType) {
   const [markerInfo, setMarkerInfo] = useState<{
     id: number;
     title: string;
@@ -38,7 +26,11 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
     isFavorite: boolean;
   }>();
 
-  const isMaxHeight = useRecoilValue(isBottomSheetMaxHeightState);
+  const {DEFAULT_SHOW_SCREEN_HEIGHT} = useCalculateBottomSheetHeight();
+
+  const [isMaxHeight, setIsMaxHeight] = useRecoilState(
+    isBottomSheetMaxHeightState,
+  );
 
   useEffect(() => {
     const {type, info} = marker;
@@ -61,21 +53,35 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
     }
   }, [marker]);
 
-  const navigation = useNavigation();
-
-  // useEffect(() => {
-  //   if (isMaxHeight) {
-  //     const {type, info} = marker;
-  //     // navigation.navigate('Map', {
-  //     //   screen: 'DetailPage',
-  //     //   params: {state: {type: 'GAS_STATION', id}},
-  //     // });
-  //     // navigation.navigate('DetailPage', {state: {type, id: info.id}});
-  //   }
-  // }, [isMaxHeight]);
-
   if (!markerInfo) {
     return <Loading />;
+  }
+
+  if (isMaxHeight) {
+    if (marker.type === 'GAS_STATION') {
+      return (
+        <GasStationDetail
+          id={markerInfo.id}
+          goBack={() => {
+            onScrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
+            setTimeout(() => {
+              setIsMaxHeight(false);
+            }, 300);
+          }}
+        />
+      );
+    }
+    return (
+      <ParkingLotDetail
+        id={markerInfo.id}
+        goBack={() => {
+          onScrollTo(DEFAULT_SHOW_SCREEN_HEIGHT);
+          setTimeout(() => {
+            setIsMaxHeight(false);
+          }, 300);
+        }}
+      />
+    );
   }
 
   return (
@@ -84,7 +90,6 @@ function SelectMarkerCard({marker}: SelectMarkerCardType) {
         flex: 1,
         paddingVertical: 20,
         position: 'relative',
-        backgroundColor: isMaxHeight ? 'red' : 'green',
       }}>
       <SizedView marginHorizontal={0}>
         <FlexView

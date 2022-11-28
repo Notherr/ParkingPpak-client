@@ -72,7 +72,9 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
     ['oilStation'],
     async () => {
       const response = await getContentList(
-        `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}`,
+        `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}${
+          keyword ? `&keyword=${keyword}` : ''
+        }`,
       );
       return response.data.map((oilStation: GasStation) => {
         return oilStation;
@@ -189,7 +191,9 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
       )}
       <MyLocationButton onPress={goMyLocation} />
       <BottomSheet showBottomSheet={!!marker}>
-        {marker && <SelectMarkerCard marker={marker} />}
+        {onScrollTo =>
+          marker && <SelectMarkerCard marker={marker} onScrollTo={onScrollTo} />
+        }
       </BottomSheet>
     </>
   );
