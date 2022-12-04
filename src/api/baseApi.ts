@@ -13,7 +13,7 @@ const baseAPI = new APIService({
 });
 
 const appendToken = async (config: AxiosRequestConfig) => {
-  console.log(config);
+  // console.log(config);
   const userInfo = await authStorage.get();
   if (userInfo) {
     const {jwt} = userInfo;
@@ -32,7 +32,7 @@ const appendToken = async (config: AxiosRequestConfig) => {
 
 baseAPI.instance.interceptors.request.use(appendToken);
 baseAPI.instance.interceptors.response.use(res => {
-  console.log(res);
+  // console.log(res);
   return res;
 });
 
