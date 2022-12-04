@@ -76,6 +76,10 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
           keyword ? `&keyword=${keyword}` : ''
         }`,
       );
+      if (!response.data) {
+        return [];
+      }
+      // console.log(response.data);
       return response.data.map((oilStation: GasStation) => {
         return oilStation;
       });
@@ -94,8 +98,13 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
     ['parkingLot'],
     async () => {
       const response = await getContentList(
-        `?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}`,
+        `?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}${
+          keyword ? `&keyword=${keyword}` : ''
+        }`,
       );
+      if (!response.data) {
+        return [];
+      }
       return response.data.map((parkingLot: ParkingLot) => {
         return parkingLot;
       });
@@ -106,7 +115,6 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
   );
 
   const onRegionChangeComplete = (newRegion: Region, zoom: number) => {
-    console.log('여기인가요?', newRegion);
     setIsShowBottomSheet(false);
     setMarker(undefined);
     // setRegion(newRegion);
@@ -124,6 +132,13 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
 
   useEffect(() => {
     console.log(keyword);
+    if (keyword !== undefined) {
+      if (activeType === 'GAS_STATION') {
+        refetchOilStations();
+      } else {
+        refetchParkingLots();
+      }
+    }
   }, [keyword]);
 
   if (!region) {

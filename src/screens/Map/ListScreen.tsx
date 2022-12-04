@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useIsFocused} from '@react-navigation/native';
 import {useContent} from 'recoil/actions';
 import {palette} from '@/constant';
-import {TabView, TabBar, SceneRendererProps} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import {
   View,
   Pressable,
@@ -26,7 +26,11 @@ type RouteType = {
   title: string;
 };
 
-const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
+const ParkingRoute = ({
+  navigation,
+  route,
+  keyword,
+}: NativeStackScreenProps<any> & {keyword?: string}) => {
   const [parkingLotList, setParkingLotList] = useState<ParkingLot[]>([]);
   const {removeLike, addLike} = useLike();
 
@@ -70,10 +74,12 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     return await getContentList(
       `?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}${
         searchAfter ? `&searchAfter=${searchAfter}` : ''
-      }`,
+      }${keyword ? `&keyword=${keyword}` : ''}`,
     ).then(res => {
       if (res.data) {
         setParkingLotList(prev => [...prev, ...res.data]);
+      } else {
+        setParkingLotList([]);
       }
     });
   };
@@ -81,11 +87,11 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   const isPageFocused = useIsFocused();
 
   useEffect(() => {
-    if (isPageFocused) {
+    if (isPageFocused || keyword !== undefined) {
       fetchList();
     }
     return () => setParkingLotList([]);
-  }, [isPageFocused]);
+  }, [isPageFocused, keyword]);
 
   const onToggle = (id: number, like: boolean) => {
     if (like) {
@@ -127,7 +133,11 @@ const ParkingRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   );
 };
 
-const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
+const OilRoute = ({
+  navigation,
+  route,
+  keyword,
+}: NativeStackScreenProps<any> & {keyword?: string}) => {
   const [gasStationList, setGasStationList] = useState<GasStation[]>([]);
   const {removeLike, addLike} = useLike();
 
@@ -139,10 +149,12 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     return await getContentList(
       `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}${
         searchAfter ? `&searchAfter=${searchAfter}` : ''
-      }`,
+      }${keyword ? `&keyword=${keyword}` : ''}`,
     ).then(res => {
       if (res.data) {
         setGasStationList(prev => [...prev, ...res.data]);
+      } else {
+        setGasStationList([]);
       }
     });
   };
@@ -178,12 +190,13 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
   });
 
   const isPageFocused = useIsFocused();
+
   useEffect(() => {
-    if (isPageFocused) {
+    if (isPageFocused || keyword !== undefined) {
       fetchList();
     }
     return () => setGasStationList([]);
-  }, [isPageFocused]);
+  }, [isPageFocused, keyword]);
 
   const onToggle = (id: number, like: boolean) => {
     if (like) {
@@ -220,10 +233,6 @@ const OilRoute = ({navigation, route}: NativeStackScreenProps<any>) => {
     />
   ) : (
     <View style={styles.emptyBox}>
-      <Pressable
-        onPress={() => navigation.navigate('DetailPage', {id: 1, type: 'wwn'})}>
-        <Text>디테일 보기</Text>
-      </Pressable>
       <Text style={styles.empty}>주유소가 없습니다.</Text>
     </View>
   );
@@ -235,14 +244,24 @@ export default function ListScreen({
 }: NativeStackScreenProps<any>) {
   const renderScene = ({
     route: sceneRoute,
-  }: SceneRendererProps & {
+    keyword,
+  }: {
     route: RouteType;
+    keyword?: string;
   }) => {
     switch (sceneRoute.key) {
       case 'PARKING_LOT':
-        return <ParkingRoute navigation={navigation} route={route} />;
+        return (
+          <ParkingRoute
+            navigation={navigation}
+            route={route}
+            keyword={keyword}
+          />
+        );
       case 'GAS_STATION':
-        return <OilRoute navigation={navigation} route={route} />;
+        return (
+          <OilRoute navigation={navigation} route={route} keyword={keyword} />
+        );
       default:
         return <></>;
     }
@@ -261,6 +280,8 @@ export default function ListScreen({
     {key: 'PARKING_LOT', title: '주차장'},
   ];
 
+  const inputRef = useRef<string>();
+
   return (
     <View style={styles.box}>
       <View style={styles.header}>
@@ -275,11 +296,13 @@ export default function ListScreen({
         </Pressable>
         <TextInput
           style={styles.input}
-          onChangeText={setInput}
-          value={input}
+          onChangeText={text => (inputRef.current = text)}
           placeholder="장소를 검색하세요"
         />
         <Pressable
+          onPress={() => {
+            setInput(inputRef.current);
+          }}
           style={({pressed}) => [
             styles.button,
             Platform.OS === 'ios' && {opacity: pressed ? 0.6 : 1},
@@ -299,7 +322,7 @@ export default function ListScreen({
         ) : (
           <TabView
             navigationState={{index, routes}}
-            renderScene={renderScene}
+            renderScene={({route}) => renderScene({route, keyword: input})}
             onIndexChange={setIndex}
             initialLayout={{width: layout.width}}
             renderTabBar={props => (

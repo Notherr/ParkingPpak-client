@@ -40,7 +40,7 @@ function SelectMarkerCard({marker, onScrollTo}: SelectMarkerCardType) {
         id: info.id,
         title: info.compName,
         logo,
-        subInfo: `휘발유 ${info?.gasolinePrice.toLocaleString()}원`,
+        subInfo: `휘발유 ${info?.gasolinePrice?.toLocaleString()}원`,
         isFavorite: info.isFavorite,
       });
     } else {

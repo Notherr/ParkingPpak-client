@@ -6,7 +6,7 @@ import {palette} from '@/constant';
 import {View, Pressable, StyleSheet, TextInput, Platform} from 'react-native';
 
 type SearchBoxProp = NativeStackScreenProps<any> & {
-  onSearch: (keyword: string) => void;
+  onSearch: (keyword?: string) => void;
 };
 
 function SearchBox({navigation, onSearch}: SearchBoxProp) {
@@ -41,7 +41,7 @@ function SearchBox({navigation, onSearch}: SearchBoxProp) {
           ]}
           android_ripple={{color: palette.white}}
           onPress={() => {
-            input && onSearch(input);
+            onSearch(input);
           }}>
           <Icon
             name="search"

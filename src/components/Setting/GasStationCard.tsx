@@ -30,11 +30,11 @@ export default function GasStationCard({
         </View>
         <View style={styles.desc}>
           <Text style={styles.perHour}>휘발유</Text>
-          <Text style={styles.price}>{gasolinePrice.toLocaleString()}원</Text>
+          <Text style={styles.price}>{gasolinePrice?.toLocaleString()}원</Text>
         </View>
         <View style={styles.desc}>
           <Text style={styles.perHour}>경유&nbsp;&nbsp;&nbsp;</Text>
-          <Text style={styles.price}>{dieselPrice.toLocaleString()}원</Text>
+          <Text style={styles.price}>{dieselPrice?.toLocaleString()}원</Text>
         </View>
       </View>
       <View style={styles.buttonWrapper}>
