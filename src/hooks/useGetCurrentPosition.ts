@@ -13,8 +13,8 @@ function useGetCurrentPosition() {
       }
       Geolocation.getCurrentPosition(
         position => {
-          const latitude = +JSON.stringify(position.coords.latitude);
-          const longitude = +JSON.stringify(position.coords.longitude);
+          const latitude = Number(JSON.stringify(position.coords.latitude));
+          const longitude = Number(JSON.stringify(position.coords.longitude));
           setLatlng({latitude, longitude});
         },
         error => {

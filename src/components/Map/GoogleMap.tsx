@@ -39,16 +39,23 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
   const [marker, setMarker] = useRecoilState(selectedInfoState);
   const [zoom, setZoom] = useState(12);
   const mapRef = useRef<MapView>(null);
-  const {latitude, longitude} = useGetCurrentPosition();
+  const currentCoord = useGetCurrentPosition();
 
   const {getContentList} = useContent();
 
-  const [region, setRegion] = useState<Region>({
-    latitude: 37.564362,
-    longitude: 126.977011,
-    latitudeDelta,
-    longitudeDelta,
-  });
+  const [region, setRegion] = useState<Region>();
+
+  useEffect(() => {
+    if (currentCoord.latitude && currentCoord.longitude) {
+      console.log(currentCoord);
+      setRegion({
+        latitudeDelta,
+        longitudeDelta,
+        latitude: 37.564362,
+        longitude: 126.977011,
+      });
+    }
+  }, [currentCoord]);
 
   // 마커 클릭시 bottom sheet가 올라옴
   const onPressMarker = useCallback(
@@ -126,7 +133,7 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
   };
 
   const goMyLocation = () => {
-    const region = {latitude, longitude, latitudeDelta, longitudeDelta};
+    const region = {...currentCoord, latitudeDelta, longitudeDelta};
     mapRef.current?.animateToRegion(region);
   };
 
@@ -153,7 +160,10 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
           activeType={activeType}
           initialRegion={region}
           onRegionChangeComplete={onRegionChangeComplete}>
-          <CurrentLocationMarker latitude={latitude} longitude={longitude} />
+          <CurrentLocationMarker
+            latitude={region.latitude}
+            longitude={region.longitude}
+          />
           <CenterMarker
             isFetching={fetchingOilStations || fetchingParkingLots}
             center={{
