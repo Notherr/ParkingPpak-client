@@ -67,7 +67,7 @@ const ParkingRoute = ({navigation}: NativeStackScreenProps<any>) => {
     return <ActivityIndicator style={styles.loading} />;
   }
 
-  return parkingData?.data.length ? (
+  return parkingData?.data?.length ? (
     <FlatList<ParkingLot>
       data={parkingData.data}
       renderItem={({item}) => (
@@ -134,7 +134,7 @@ const OilRoute = ({navigation}: NativeStackScreenProps<any>) => {
     return <ActivityIndicator style={styles.loading} />;
   }
 
-  return gasStationData?.data.length ? (
+  return gasStationData?.data?.length ? (
     <FlatList<GasStation>
       data={gasStationData.data}
       renderItem={({item}) => (

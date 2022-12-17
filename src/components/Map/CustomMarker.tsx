@@ -68,9 +68,11 @@ function CustomMarker({
           {logo && <View style={{width: 30}}>{logo}</View>}
           {zoom > 11 && (
             <TextComponent
-              fontSize={16}
-              fontWeight={'bold'}
-              color={selected ? '#fff' : '#000'}>
+              style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: selected ? '#fff' : '#000',
+              }}>
               {title}
             </TextComponent>
           )}

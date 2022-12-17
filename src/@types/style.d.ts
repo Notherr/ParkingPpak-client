@@ -1,3 +1,5 @@
+import {TextStyle} from 'react-native';
+
 export {};
 
 declare global {
@@ -65,6 +67,6 @@ declare global {
     lineHeight?: number;
     color?: string;
     children: React.ReactNode;
-    style?: any;
+    style?: TextStyle;
   };
 }

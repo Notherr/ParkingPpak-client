@@ -39,7 +39,7 @@ function MyMap({activeType, keyword}: GoogleMapProps) {
   const [marker, setMarker] = useRecoilState(selectedInfoState);
   const [zoom, setZoom] = useState(12);
   const mapRef = useRef<MapView>(null);
-  const {latitude, longitude} = useGetCurrentPosition();
+  const {latlng} = useGetCurrentPosition();
 
   const {getContentList} = useContent();
 
@@ -116,7 +116,7 @@ function MyMap({activeType, keyword}: GoogleMapProps) {
   };
 
   const goMyLocation = () => {
-    const region = {latitude, longitude, latitudeDelta, longitudeDelta};
+    const region = {...latlng, latitudeDelta, longitudeDelta};
     mapRef.current?.animateToRegion(region);
   };
 

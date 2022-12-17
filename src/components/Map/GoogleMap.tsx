@@ -226,7 +226,13 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
       <MyLocationButton onPress={goMyLocation} />
       <BottomSheet showBottomSheet={!!marker}>
         {onScrollTo =>
-          marker && <SelectMarkerCard marker={marker} onScrollTo={onScrollTo} />
+          marker && (
+            <SelectMarkerCard
+              id={marker.info.id}
+              type={marker.type}
+              onScrollTo={onScrollTo}
+            />
+          )
         }
       </BottomSheet>
     </>
