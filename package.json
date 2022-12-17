@@ -20,6 +20,7 @@
     "@types/proj4": "^2.5.2",
     "@types/react": "^18.0.21",
     "@types/react-native-vector-icons": "^6.4.12",
+    "@types/supercluster": "^7.1.0",
     "axios": "^0.27.2",
     "babel-plugin-module-resolver": "^4.1.0",
     "eslint-plugin-react": "^7.31.8",

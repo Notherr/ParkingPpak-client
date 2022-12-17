@@ -39,23 +39,23 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
   const [marker, setMarker] = useRecoilState(selectedInfoState);
   const [zoom, setZoom] = useState(12);
   const mapRef = useRef<MapView>(null);
-  const currentCoord = useGetCurrentPosition();
+  const {latlng, getCurrentPosition} = useGetCurrentPosition();
 
   const {getContentList} = useContent();
 
   const [region, setRegion] = useState<Region>();
 
   useEffect(() => {
-    if (currentCoord.latitude && currentCoord.longitude) {
-      console.log(currentCoord);
-      setRegion({
+    if (latlng.latitude && latlng.longitude) {
+      const newRegion = {
         latitudeDelta,
         longitudeDelta,
-        latitude: 37.564362,
-        longitude: 126.977011,
-      });
+        ...latlng,
+      };
+      setRegion(newRegion);
+      mapRef.current?.animateToRegion(newRegion);
     }
-  }, [currentCoord]);
+  }, [latlng]);
 
   // 마커 클릭시 bottom sheet가 올라옴
   const onPressMarker = useCallback(
@@ -79,7 +79,7 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
     ['oilStation'],
     async () => {
       const response = await getContentList(
-        `?type=gas_station&lat=${37.5666805}&lon=${126.9784147}${
+        `?type=gas_station&lat=${region?.latitude}&lon=${region?.longitude}${
           keyword ? `&keyword=${keyword}` : ''
         }`,
       );
@@ -92,7 +92,9 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
       });
     },
     {
-      enabled: activeType === 'GAS_STATION',
+      enabled:
+        activeType === 'GAS_STATION' &&
+        !!(region?.latitude && region?.longitude),
     },
   );
 
@@ -105,7 +107,7 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
     ['parkingLot'],
     async () => {
       const response = await getContentList(
-        `?type=parking_lot&lat=${37.5666805}&lon=${126.9784147}${
+        `?type=parking_lot&lat=${region?.latitude}&lon=${region?.longitude}${
           keyword ? `&keyword=${keyword}` : ''
         }`,
       );
@@ -117,28 +119,35 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
       });
     },
     {
-      enabled: activeType === 'PARKING_LOT',
+      enabled:
+        activeType === 'PARKING_LOT' &&
+        !!(region?.latitude && region?.longitude),
     },
   );
 
   const onRegionChangeComplete = (newRegion: Region, zoom: number) => {
     setIsShowBottomSheet(false);
     setMarker(undefined);
-    // setRegion(newRegion);
+    setRegion(newRegion);
     setZoom(zoom);
   };
 
-  const onResearchOilStation = () => {
-    refetchOilStations();
+  const onRefetch = () => {
+    if (region) {
+      mapRef.current?.animateToRegion(region);
+      if (activeType === 'GAS_STATION') {
+        refetchOilStations();
+      } else {
+        refetchParkingLots();
+      }
+    }
   };
 
   const goMyLocation = () => {
-    const region = {...currentCoord, latitudeDelta, longitudeDelta};
-    mapRef.current?.animateToRegion(region);
+    getCurrentPosition();
   };
 
   useEffect(() => {
-    console.log(keyword);
     if (keyword !== undefined) {
       if (activeType === 'GAS_STATION') {
         refetchOilStations();
@@ -161,8 +170,8 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
           initialRegion={region}
           onRegionChangeComplete={onRegionChangeComplete}>
           <CurrentLocationMarker
-            latitude={region.latitude}
-            longitude={region.longitude}
+            latitude={latlng.latitude}
+            longitude={latlng.longitude}
           />
           <CenterMarker
             isFetching={fetchingOilStations || fetchingParkingLots}
@@ -211,7 +220,7 @@ function GoogleMap({activeType, keyword}: GoogleMapProps) {
           icon="refresh"
           name="여기에서 재검색"
           isFetching={fetchingOilStations || fetchingParkingLots}
-          onPress={onResearchOilStation}
+          onPress={onRefetch}
         />
       )}
       <MyLocationButton onPress={goMyLocation} />
